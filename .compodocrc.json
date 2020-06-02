@@ -1,0 +1,14 @@
+{
+    "$schema": "./node_modules/@compodoc/compodoc/src/config/schema.json",
+    "name": "micro-client-connect",
+    "output": "documentation/micro-client-connect",
+    "tsconfig": "src/tsconfig.app.json",
+    "port": 5006,
+    "serve": false,
+    "open": false,
+    "watch": false,
+    "hideGenerator": true,
+    "disableLifeCycleHooks": true,
+    "disablePrivate": true,
+    "disableInternal": true
+}

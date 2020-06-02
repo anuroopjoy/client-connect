@@ -1,0 +1,14 @@
+{
+    "/container/": {
+        "target": "http://localhost:9500",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    },
+    "*": {
+        "target": "https://ocap-bwo-dev.hrb-ase-dev.net",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
+}
