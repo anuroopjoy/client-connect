@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppClientConnectWrapperComponent } from './stand-alone/app-client-connect-wrapper.component';
+import { SharedModule } from './components/shared.module';
+import {
+    AppClientConnectWrapperComponent
+} from './stand-alone/app-client-connect-wrapper.component';
 import { HostEntryComponent } from './stand-alone/host-entry/host-entry.component';
 
 @NgModule({
@@ -14,6 +17,7 @@ import { HostEntryComponent } from './stand-alone/host-entry/host-entry.componen
     imports: [
         BrowserModule,
         HttpClientModule,
+        SharedModule,
         AppRoutingModule
     ],
     providers: [],

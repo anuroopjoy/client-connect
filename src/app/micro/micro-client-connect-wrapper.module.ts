@@ -1,13 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
+import { BrowserModule } from '@angular/platform-browser';
 
+import { SharedModule } from '../components/shared.module';
 import { MicroClientConnectWrapperComponent } from './micro-client-connect-wrapper.component';
 
 /** Implementation of HRBMicroTaxFlowWrapperModule */
 @NgModule({
     declarations: [MicroClientConnectWrapperComponent],
-    imports: [BrowserModule],
+    imports: [BrowserModule, SharedModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     entryComponents: [MicroClientConnectWrapperComponent]
 })
