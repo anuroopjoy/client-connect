@@ -1,7 +1,12 @@
 <form class="page-form">
     <div class="form-group">
         <label class="text-label">Customer number</label>
-        <input name="targetNumber" type="text" [(ngModel)]="targetNumber" />
+        <input
+            name="targetNumber"
+            class="form-control"
+            type="text"
+            [(ngModel)]="targetNumber"
+        />
     </div>
     <button class="btn btn-primary" (click)="makeCall()">Make Call</button>
 </form>

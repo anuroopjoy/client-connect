@@ -1,11 +1,20 @@
 <form class="page-form">
     <div class="form-group">
         <label class="text-label">Customer number</label>
-        <input name="targetNumber" type="text" [(ngModel)]="targetNumber" />
+        <input
+            name="targetNumber"
+            class="form-control"
+            type="text"
+            [(ngModel)]="targetNumber"
+        />
     </div>
     <div class="form-group">
         <label class="text-label">Message</label>
-        <textarea name="message" [(ngModel)]="message"></textarea>
+        <textarea
+            name="message"
+            class="form-control"
+            [(ngModel)]="message"
+        ></textarea>
     </div>
     <button class="btn btn-primary" (click)="sendSms()">Send SMS</button>
 </form>
