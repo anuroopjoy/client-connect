@@ -1,26 +1,97 @@
-ocap-tax-flow {
-    background: white;
-    font-size: 16px;
-    color: #555;
+/* You can add global styles to this file, and also import other style files */
+* {
+    font-family: "Work Sans", sans-serif;
+}
+html,
+body {
     height: 100%;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    @import "./styles/tax-flow-container.scss";
-    @import '../projects/hrblock-ocap-header/src/styles/header';
+    color: #1a1b1c;
 }
 
-@import './styles/components/zip-modal';
+label,
+a {
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    display: inline-block;
+    color: inherit;
+    transition: border 0.2s;
+    border-bottom: 5px solid rgba(#55ad44, 0.2);
+    padding: 3px 2px;
+    &:hover {
+        border-bottom-color: #6fb659;
+    }
+}
 
-.finish-flow-button-tooltip_container {
-    .tooltip-inner {
-        background: #f1f4f8;
-        color: black;
-        border: 1px solid gray;
-        border-radius: 0.5rem;
-        max-width: 280px;
-        padding: 0.25rem;
-        text-align: left;
+.layout {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    grid-template-rows: 8% 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+label.nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-bottom: 2px solid #55ad44;
+    background: #ecf0f1;
+    user-select: none;
+    transition: background 0.4s, padding-left 0.2s;
+    padding-left: 0;
+    input[type="radio"]:checked + .page + & {
+        background: #6fb659;
+        color: #ffffff;
     }
-    .arrow {
-        display: none;
+    span {
+        padding-left: 5px;
+        position: relative;
+        font-size: 1em;
     }
+}
+
+.page {
+    grid-column-start: 1;
+    grid-row-start: 2;
+    grid-column-end: span 3;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.page-contents > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.2s, transform 0.2s;
+    @for $c from 1 through 20 {
+        &:nth-child(#{$c}) {
+            transition-delay: 0.2s + ($c * 0.2s);
+        }
+    }
+}
+
+input[type="radio"] + .page {
+    transition: transform 0.2s;
+    transform: translateX(100%);
+}
+
+input[type="radio"]:checked + .page {
+    transform: translateX(0%);
+    .page-contents > * {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.page-contents {
+    max-width: 100%;
+    width: 500px;
+    margin: 0 auto;
 }
