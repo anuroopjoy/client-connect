@@ -2,16 +2,11 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "../out-tsc/app",
-        "types": [],
+        "types": ["node"],
         "noImplicitAny": true,
         "suppressImplicitAnyIndexErrors": true
     },
-    "exclude": [
-        "test.ts",
-        "**/*.spec.ts",
-        "**/tests/**",
-        "**/environments/**"
-    ],
+    "exclude": ["test.ts", "**/*.spec.ts", "**/tests/**", "**/environments/**"],
     "angularCompilerOptions": {
         "fullTemplateTypeCheck": true,
         "strictInjectionParameters": true

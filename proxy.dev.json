@@ -1,6 +1,6 @@
 {
-    "/container/": {
-        "target": "http://localhost:9500",
+    "/getToken": {
+        "target": "http://localhost:8080",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true

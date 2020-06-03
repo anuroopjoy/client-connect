@@ -1,10 +1,11 @@
 // tslint:disable: no-any
-import { isEmpty, each } from 'lodash-es';
+import { isEmpty, each, find, isUndefined } from 'lodash-es';
 
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { addMessage, removeMessage, updateMessage, updateMember, updateActiveChannel } from './chat-helper';
 
-const twilioClient = require('twilio-chat');
+const TwilioChat = require('twilio-chat');
 
 @Component({
     selector: 'app-chat',
@@ -14,16 +15,22 @@ const twilioClient = require('twilio-chat');
 export class ChatComponent {
 
     public channels: { [key: string]: any } = {
-        joined: [], invited: [], unknown: []
+        joined: [], invited: [], unknown: [], common: []
     };
-    public userName: string;
+    public userName = 'Arun';
+
+    public messages: string[];
 
     private apiUrls = {
-        getToken: '/Token/Index'
+        getToken: '/getToken'
     };
     private client: any;
 
-    constructor(private http: HttpClient) { }
+    private activeChannel: any;
+
+    constructor(private http: HttpClient) {
+        this.onConnect();
+    }
 
     public onConnect() {
         if (!isEmpty(this.userName)) {
@@ -31,9 +38,22 @@ export class ChatComponent {
         }
     }
 
-    private async getChannelDetails() {
+    private onChannelEvents() {
+
+        let subscribedChannels: any[] = [];
+
+        const setActiveChannel = (channel: any) => {
+            if (this.activeChannel) {
+                this.activeChannel.removeListener('messageAdded', addMessage);
+                this.activeChannel.removeListener('messageRemoved', removeMessage);
+                this.activeChannel.removeListener('messageUpdated', updateMessage);
+                this.activeChannel.removeListener('updated', updateActiveChannel);
+                this.activeChannel.removeListener('memberUpdated', updateMember);
+            }
+        };
+
         const updateChannels = (page: any) => {
-            const subscribedChannels = page.items
+            subscribedChannels = page.items
                 .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
             each(subscribedChannels, (channel) => {
                 switch (channel.status) {
@@ -49,52 +69,90 @@ export class ChatComponent {
                 }
             });
         };
-        try {
-            const page = await this.client.getSubscribedChannels();
-            updateChannels(page);
-        } catch (error) {
-            console.log('Error occurred | Unable to get channel details', { error });
-        }
+
+        const updatePublicChannels = (page: any) => {
+            const publicChannels = page.items
+                .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
+            each(publicChannels, (channel) => {
+                const result = find(subscribedChannels, item => item.sid === channel.sid);
+                console.log('Adding public channel ' + channel.sid + ' ' + channel.status + ', result=' + result);
+                if (isUndefined(result)) {
+                    channel.getChannel()
+                        .then((pChannel: { join: () => Promise<any>; }) => {
+                            pChannel.join()
+                                .then(qChannel => {
+                                    setActiveChannel(qChannel);
+                                    // removePublicChannel(qChannel);
+                                })
+                                .catch((error: any) => {
+                                    console.error('Error occurred | Unable to join public channel', { error });
+                                }).catch((error) => {
+                                    console.error('Error occurred | Unable to get public channel details', { error });
+                                });
+                        });
+                }
+            });
+        };
+
+        this.client.getSubscribedChannels()
+            .then((page: any) => {
+                updateChannels(page);
+            })
+            .catch((error: any) => {
+                console.error('Error occurred | Unable to get channel details', { error });
+            });
+        this.client.getPublicChannelDescriptors()
+            .then((page: any) => {
+                updatePublicChannels(page);
+            })
+            .catch((error: any) => {
+                console.error('Error occurred | Unable to get public channel details', { error });
+            });
     }
 
-    private getConnectionState() {
+    private onConnectionStateEvents() {
         const onConnectionChange = () => {
             const state = this.client.connectionState;
-            console.log(state);
+            console.log('Connection State: ' + state);
         };
         this.client.on('connectionStateChanged', onConnectionChange);
     }
 
     private async initializeChat() {
         try {
-            const response: any = await this.http.get(
+            this.http.get(
                 this.apiUrls.getToken, {
-                params: { identity: this.userName, device: 'browser' }
-            }).toPromise();
-            const token = response.text;
-            this.client = await (twilioClient.Chat.Client.create(token, { logLevel: 'info' }) as Promise<any>);
-            this.subscribeToClientEvents();
+                params: { identity: this.userName, device: 'browser' },
+                responseType: 'text'
+            }).toPromise().then((token: any) => {
+                (TwilioChat.Client.create(token, { logLevel: 'info' }) as Promise<any>)
+                    .then((client) => {
+                        this.client = client;
+                        this.subscribeToClientEvents();
+                    });
+            });
         } catch (error) {
-            console.log('Error occurred | Unable to fetch the chat service token', { error });
+            console.error('Error occurred | Unable to fetch the chat service token', { error });
         }
     }
 
     private async subscribeToClientEvents() {
-        this.tokenRefresh();
-        this.getChannelDetails();
-        this.getConnectionState();
+        this.onTokenRefreshEvent();
+        this.onChannelEvents();
+        this.onConnectionStateEvents();
     }
 
-    private tokenRefresh() {
+    private onTokenRefreshEvent() {
         const refreshToken = () => {
             try {
-                const response: any = this.http.get(
+                const token: any = this.http.get(
                     this.apiUrls.getToken, {
-                    params: { identity: this.userName, device: 'browser' }
+                    params: { identity: this.userName, device: 'browser' },
+                    responseType: 'text'
                 }).toPromise();
-                this.client.updateToken(response.text);
+                this.client.updateToken(token);
             } catch (error) {
-                console.log('Error occurred | Unable to refresh the chat service token', { error });
+                console.error('Error occurred | Unable to refresh the chat service token', { error });
             }
         };
         this.client.on('tokenAboutToExpire', refreshToken);
