@@ -40,7 +40,8 @@
         "lodash-es": "4.17.11",
         "rxjs": "6.3.3",
         "tslib": "1.9.0",
-        "twilio-chat": "^3.4.0",
+        "twilio-chat": "3.4.0",
+        "twilio-client": "1.11.0",
         "zone.js": "0.8.27"
     },
     "devDependencies": {
