@@ -10,14 +10,18 @@ const Device = require('twilio-client').Device;
     styleUrls: ['./voice-call.component.scss']
 })
 export class VoiceCallComponent implements OnInit {
-    public mode = 'Customer';
+    public mode = 'Customer'; // TO DO need to set this value from User profile
+    // public mode = 'TaxPro';
     public status = 'Connecting to Twilio...';
     public noCallInProgress = true;
+    public incomingCall = false;
+    public answerCallback: () => void;
 
     constructor(private http: HttpClient) { }
 
     public async ngOnInit() {
-        const data: any = await this.http.post('/token/generate', { page: window.location.pathname }).toPromise();
+        const param = this.mode === 'TaxPro' ? '/dashboard' : window.location.pathname;
+        const data: any = await this.http.post('/token/generate', { page: param }).toPromise();
         // Set up the Twilio Client Device with the token
         Device.setup(data.token);
         this.handleCallbacks();
@@ -31,6 +35,12 @@ export class VoiceCallComponent implements OnInit {
         Device.disconnectAll();
     }
 
+    public callCustomer(phoneNumber: string) {
+        this.status = `Calling ${phoneNumber}...`;
+        const params = { phoneNumber };
+        Device.connect(params);
+
+    }
     private handleCallbacks() {
         Device.ready(() => {
             this.status = 'Ready';
@@ -43,6 +53,7 @@ export class VoiceCallComponent implements OnInit {
         Device.connect((connection: any) => {
             // Enable the hang up button and disable the call buttons
             this.noCallInProgress = false;
+            this.incomingCall = false;
             // If phoneNumber is part of the connection, this is a call from a
             // support agent to a customer's phone
             if ('phoneNumber' in connection.message) {
@@ -68,12 +79,11 @@ export class VoiceCallComponent implements OnInit {
             connection.accept(() => {
                 this.status = 'In call with customer';
             });
-
             // // Set a callback on the answer button and enable it
-            // answerButton.click(() => {
-            //     connection.accept();
-            // });
-            // answerButton.prop('disabled', false);
+            this.incomingCall = true;
+            this.answerCallback = () => {
+                connection.accept();
+            };
         });
 
     }

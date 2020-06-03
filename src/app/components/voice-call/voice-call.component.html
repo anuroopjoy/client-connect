@@ -34,5 +34,46 @@
     </div>
 </ng-container>
 <ng-container *ngIf="mode === 'TaxPro'">
+    <div class="container">
+        <h2>Call Customer</h2>
+        <p class="lead">
+          Click the "Call customer" button to start a phone call from your browser.
+        </p>
+        <div class="row">
+          <div class="col-md-4 col-md-push-8">
+            <div class="panel panel-primary client-controls">
+              <div class="panel-heading">
+                <h3 class="panel-title">Make a call</h3>
+              </div>
+              <div class="panel-body">
+                <p>
+                  <strong>Status</strong>
+                </p>
+                <div id="call-status" class="well well-sm">
+                  {{status}}
+                </div>
+                <button class="btn btn-lg btn-success answer-button" [disabled]="!incomingCall" (click)="answerCallback()">Answer call</button>
+                <button class="btn btn-lg btn-danger hangup-button" [disabled]="noCallInProgress" (click)="hangUp()">Hang up</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8 col-md-pull-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                  <div class="pull-right">
+                    <button class="btn btn-primary btn-lg call-customer-button" [disabled]="!noCallInProgress" (click)="callCustomer(customerPhone)">
+                      <span class="glyphicon glyphicon-earphone"></span>
+                      Call customer
+                    </button>
+                  </div>
+                  <p>
+                    <strong>Phone number:</strong>
+                    <input style="margin-left: 10px;" type="text" [(ngModel)]="customerPhone">
+                  </p>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
 
 </ng-container>
