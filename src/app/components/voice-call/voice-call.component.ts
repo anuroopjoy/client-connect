@@ -6,9 +6,6 @@ import { Component } from '@angular/core';
 })
 export class VoiceCallComponent {
 
-    public targetNumber: string;
-
-    public makeCall() {
-    }
+    public mode = 'Customer';
 
 }

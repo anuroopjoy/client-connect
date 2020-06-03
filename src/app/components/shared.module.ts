@@ -6,6 +6,7 @@ import { EmailComponent } from './email/email.component';
 import { ChatComponent } from './chat/chat.component';
 import { VideoCallComponent } from './video-call/video-call.component';
 import { VoiceCallComponent } from './voice-call/voice-call.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -17,6 +18,7 @@ import { VoiceCallComponent } from './voice-call/voice-call.component';
     imports: [
         FormsModule,
         HttpClientModule,
+        CommonModule
     ],
     providers: [],
     exports: [
