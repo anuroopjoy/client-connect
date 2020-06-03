@@ -1,21 +1,9 @@
-<!-- <form class="page-form">
-    <div class="form-group">
-        <label class="text-label">Customer number</label>
-        <input
-            name="targetNumber"
-            class="form-control"
-            type="text"
-            [(ngModel)]="targetNumber"
-        />
-    </div>
-    <button class="btn btn-primary" (click)="makeCall()">Make Call</button>
-</form> -->
 <ng-container *ngIf="mode === 'Customer'">
     <div class="container">
 
-        <h2 id="support">Contact support</h2>
+        <h2 id="support">Contact Tax Professional</h2>
         <p class="lead">
-            Talk with one of our support agents right now by clicking the "Call Support" button on the right. If you can"t talk now, fill out a support ticket and an agent will call you later.
+            Talk with one of our tax professionals right now by clicking the "Call TaxPro" button on the right.
         </p>
 
         <div class="row">
@@ -24,7 +12,7 @@
                 <div class="panel panel-info client-controls">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            Talk to support now
+                            Talk to tax professional now
                         </h3>
                     </div>
                     <div class="panel-body">
@@ -36,7 +24,7 @@
                         </div>
                         <button class="btn btn-lg btn-primary call-support-button" [disabled]="!noCallInProgress" (click)="callSupport()">
                             <span class="glyphicon glyphicon-earphone"></span>
-                            Call support
+                            Call TaxPro
                         </button>
                         <button class="btn btn-lg btn-danger hangup-button" [disabled]="noCallInProgress" (click)="hangUp()">Hang up</button>
                     </div>
