@@ -5,16 +5,18 @@
         type="radio"
         class="nav chat-radio"
         id="chat"
+        [(ngModel)]="selectedMode"
+        value="Chat"
         checked="checked"
     />
-    <div class="page chat-page">
+    <div class="page chat-page" *ngIf="selectedMode === 'Chat'">
         <div class="page-contents">
             <p>
                 <app-chat></app-chat>
             </p>
         </div>
     </div>
-    <label class="nav" for="chat">
+    <label class="nav" for="chat" (click)="setSelectedMode('Chat')">
         <img
             src="./../assets/images/icons8-sms-64.png"
             width="30"
@@ -26,8 +28,10 @@
     <!--  end-region : chat  -->
 
     <!--  region : email  -->
-    <input name="nav" type="radio" class="email-radio" id="email" />
-    <div class="page email-page">
+    <input name="nav" type="radio" class="email-radio" id="email" [(ngModel)]="selectedMode"
+    value="Email"
+/>
+    <div class="page email-page" *ngIf="selectedMode === 'Email'">
         <div class="page-contents">
             <h1>Email</h1>
             <p>
@@ -35,7 +39,7 @@
             </p>
         </div>
     </div>
-    <label class="nav" for="email">
+    <label class="nav" for="email" (click)="setSelectedMode('Email')">
         <img
             src="./../assets/images/icons8-mailing-64.png"
             width="30"
@@ -47,16 +51,16 @@
     <!--  end-region : email  -->
 
     <!--  region : voice-call  -->
-    <input name="nav" type="radio" class="voice-radio" id="voice" />
-    <div class="page voice-page">
-        <div class="page-contents">
-            <h1>Voice Call</h1>
+    <input name="nav" type="radio" class="voice-radio" id="voice" [(ngModel)]="selectedMode"
+    value="Voice"/>
+    <div class="page voice-page" *ngIf="selectedMode === 'Voice'">
+        <div>
             <p>
                 <app-voice-call></app-voice-call>
             </p>
         </div>
     </div>
-    <label class="nav" for="voice">
+    <label class="nav" for="voice" (click)="setSelectedMode('Voice')">
         <img
             src="./../assets/images/icons8-phone-100.png"
             width="30"
@@ -68,15 +72,16 @@
     <!--  end-region : voice-call  -->
 
     <!--  region : video-call  -->
-    <input name="nav" type="radio" class="video-radio" id="video" />
-    <div class="page video-page">
+    <input name="nav" type="radio" class="video-radio" id="video" [(ngModel)]="selectedMode"
+    value="Video" />
+    <div class="page video-page" *ngIf="selectedMode === 'Video'">
         <div class="page-contents">
             <p>
                 <app-video-call></app-video-call>
             </p>
         </div>
     </div>
-    <label class="nav" for="video">
+    <label class="nav" for="video" (click)="setSelectedMode('Video')">
         <img
             src="./../assets/images/icons8-video-call-100.png"
             width="30"

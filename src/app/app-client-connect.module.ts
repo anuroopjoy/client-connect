@@ -8,6 +8,7 @@ import {
     AppClientConnectWrapperComponent
 } from './stand-alone/app-client-connect-wrapper.component';
 import { HostEntryComponent } from './stand-alone/host-entry/host-entry.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -18,6 +19,7 @@ import { HostEntryComponent } from './stand-alone/host-entry/host-entry.componen
         BrowserModule,
         HttpClientModule,
         SharedModule,
+        FormsModule,
         AppRoutingModule
     ],
     providers: [],
