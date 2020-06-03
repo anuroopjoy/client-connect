@@ -3,14 +3,14 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { EmailComponent } from './email/email.component';
-import { SmsComponent } from './sms/sms.component';
+import { ChatComponent } from './chat/chat.component';
 import { VideoCallComponent } from './video-call/video-call.component';
 import { VoiceCallComponent } from './voice-call/voice-call.component';
 
 @NgModule({
     declarations: [
         EmailComponent,
-        SmsComponent,
+        ChatComponent,
         VideoCallComponent,
         VoiceCallComponent
     ],
@@ -21,7 +21,7 @@ import { VoiceCallComponent } from './voice-call/voice-call.component';
     providers: [],
     exports: [
         EmailComponent,
-        SmsComponent,
+        ChatComponent,
         VideoCallComponent,
         VoiceCallComponent
     ]
