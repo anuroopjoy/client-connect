@@ -4,6 +4,7 @@
     "scripts": {
         "ng": "ng",
         "micro-server": "http-server ../wwwroot -p 9100 --cors=http://localhost:4200/",
+        "host-server": "http-server ./host-app -p 9200",
         "ng-start": "ng serve --proxy-config proxy.conf.json --project=app-client-connect --configuration=production",
         "ng-dev": "ng serve --proxy-config proxy.dev.json --project=app-client-connect",
         "postinstall": "node patch-webpack.js",
@@ -16,7 +17,8 @@
         "micro-build": "ng build --project micro-client-connect --prod --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect",
         "micro-build:dev": "ng build --project micro-client-connect --aot --source-map true --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect",
         "micro-build:prod": "npm run micro-build",
-        "micro": "npm run lint && npm run micro-build:dev",
+        "copy:all": "xcopy /d /y /i /s dist\\micro-client-connect\\* .\\host-app\\micro\\micro-client-connect\\*",
+        "micro": "npm run micro-build:dev && npm run copy:all",
         "documentation:lib": "npx compodoc -c ./projects/hrblock-ocap-header/.compodocrc.json",
         "documentation": "npm run documentation:lib && npx compodoc -c ./.compodocrc.json",
         "bundle-analyzer": "webpack-bundle-analyzer dist/app-client-connect/stats.json"
