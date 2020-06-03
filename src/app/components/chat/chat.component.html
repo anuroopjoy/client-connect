@@ -1,21 +1,34 @@
 <form class="page-form">
-    <div class="form-group">
+    <div class="led-box">
+        <div
+            [ngClass]="{
+                'led-green': connectionState === 'connected',
+                'led-red': connectionState !== 'connected'
+            }"
+        ></div>
+    </div>
+    <div>
+        <h1>
+            {{
+                connectionState === "connected"
+                    ? "You're Online."
+                    : "You're Offline."
+            }}
+        </h1>
+    </div>
+    <div *ngIf="connectionState !== 'connected'" class="form-group">
+        <h3>Please provide your name to start the chat session.</h3>
         <label class="text-label">User Name</label>
         <input
             name="userName"
             class="form-control"
-            placeholder="Enter your name to start chatting."
+            placeholder="Enter your name"
             type="text"
             [(ngModel)]="userName"
         />
     </div>
-    <!-- <div class="form-group">
-        <label class="text-label">Message</label>
-        <textarea
-            name="message"
-            class="form-control"
-            [(ngModel)]="message"
-        ></textarea>
+    <div *ngIf="connectionState !== 'connected'" class="form-group">
+        <label class="text-label"></label>
+        <button class="btn btn-primary" (click)="connect()">Start</button>
     </div>
-    <button class="btn btn-primary" (click)="sendSms()">Send SMS</button> -->
 </form>

@@ -2,7 +2,7 @@
 import { isEmpty, each, find, isUndefined } from 'lodash-es';
 
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { addMessage, removeMessage, updateMessage, updateMember, updateActiveChannel } from './chat-helper';
 
 const TwilioChat = require('twilio-chat');
@@ -14,12 +14,14 @@ const TwilioChat = require('twilio-chat');
 })
 export class ChatComponent {
 
+    public userName = '';
+
     public channels: { [key: string]: any } = {
         joined: [], invited: [], unknown: [], common: []
     };
-    public userName = 'Arun';
 
     public messages: string[];
+    public connectionState: string;
 
     private apiUrls = {
         getToken: '/getToken'
@@ -29,12 +31,13 @@ export class ChatComponent {
     private activeChannel: any;
 
     constructor(private http: HttpClient) {
-        this.onConnect();
     }
 
-    public onConnect() {
+    public connect() {
         if (!isEmpty(this.userName)) {
             this.initializeChat();
+        } else {
+            console.error('ERROR! : Unable to connect. User name is empty.');
         }
     }
 
@@ -85,9 +88,9 @@ export class ChatComponent {
                                     // removePublicChannel(qChannel);
                                 })
                                 .catch((error: any) => {
-                                    console.error('Error occurred | Unable to join public channel', { error });
+                                    console.error('ERROR! : Unable to join public channel.', { error });
                                 }).catch((error) => {
-                                    console.error('Error occurred | Unable to get public channel details', { error });
+                                    console.error('ERROR! : Unable to get public channel details.', { error });
                                 });
                         });
                 }
@@ -99,21 +102,20 @@ export class ChatComponent {
                 updateChannels(page);
             })
             .catch((error: any) => {
-                console.error('Error occurred | Unable to get channel details', { error });
+                console.error('ERROR! : Unable to get channel details.', { error });
             });
         this.client.getPublicChannelDescriptors()
             .then((page: any) => {
                 updatePublicChannels(page);
             })
             .catch((error: any) => {
-                console.error('Error occurred | Unable to get public channel details', { error });
+                console.error('ERROR! : Unable to get public channel details.', { error });
             });
     }
 
     private onConnectionStateEvents() {
         const onConnectionChange = () => {
-            const state = this.client.connectionState;
-            console.log('Connection State: ' + state);
+            this.connectionState = this.client.connectionState;
         };
         this.client.on('connectionStateChanged', onConnectionChange);
     }
@@ -129,10 +131,13 @@ export class ChatComponent {
                     .then((client) => {
                         this.client = client;
                         this.subscribeToClientEvents();
+                    })
+                    .catch((error) => {
+                        console.error('ERROR! : Unable to create Twilio client.', { error });
                     });
             });
         } catch (error) {
-            console.error('Error occurred | Unable to fetch the chat service token', { error });
+            console.error('ERROR! : Unable to fetch the chat service token.', { error });
         }
     }
 
@@ -152,7 +157,7 @@ export class ChatComponent {
                 }).toPromise();
                 this.client.updateToken(token);
             } catch (error) {
-                console.error('Error occurred | Unable to refresh the chat service token', { error });
+                console.error('ERROR! : Unable to refresh the chat service token.', { error });
             }
         };
         this.client.on('tokenAboutToExpire', refreshToken);
