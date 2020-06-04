@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { each, find, isEmpty, isUndefined } from 'lodash-es';
 
-import { BWO_CHANNEL_NAME } from './chat-helper';
+import { BWO_CHANNEL_NAME, CONNECTION_STATUS, API_URLS } from './chat-helper';
 
 const Client = require('twilio-chat').Client;
 
@@ -20,13 +20,11 @@ export class ChatComponent {
         joined: [], invited: [], unknown: [], common: []
     };
     public isConnected = false;
+    public status = CONNECTION_STATUS.initial;
     public messageToSend: string;
     public messages: string[];
     public userName = '';
 
-    private apiUrls = {
-        getToken: '/getToken'
-    };
     private client: any;
     @ViewChild('messagePanel') private messagePanel: ElementRef;
 
@@ -75,21 +73,25 @@ export class ChatComponent {
 
     private initializeChat() {
         try {
+            this.status = CONNECTION_STATUS.connecting;
             this.http.get(
-                this.apiUrls.getToken, {
+                API_URLS.getToken, {
                 params: { identity: this.userName, device: 'browser' },
                 responseType: 'text'
             }).toPromise().then((token: any) => {
                 (Client.create(token, { logLevel: 'info' }) as Promise<any>)
                     .then((client) => {
                         this.client = client;
+                        this.status = CONNECTION_STATUS.connected;
                         this.subscribeToClientEvents();
                     })
                     .catch((error) => {
+                        this.status = CONNECTION_STATUS.error;
                         console.error('ERROR! : Unable to create Twilio client.', { error });
                     });
             });
         } catch (error) {
+            this.status = CONNECTION_STATUS.error;
             console.error('ERROR! : Unable to fetch the chat service token.', { error });
         }
     }
@@ -168,16 +170,17 @@ export class ChatComponent {
 
     private onTokenRefreshEvent() {
         const refreshToken = () => {
-            try {
-                const token: any = this.http.get(
-                    this.apiUrls.getToken, {
-                    params: { identity: this.userName, device: 'browser' },
-                    responseType: 'text'
-                }).toPromise();
-                this.client.updateToken(token);
-            } catch (error) {
-                console.error('ERROR! : Unable to refresh the chat service token.', { error });
-            }
+            this.http.get(
+                API_URLS.getToken, {
+                params: { identity: this.userName, device: 'browser' },
+                responseType: 'text'
+            }).toPromise()
+                .then((token) => {
+                    this.client.updateToken(token);
+                })
+                .catch((error) => {
+                    console.error('ERROR! : Unable to refresh the chat service token.', { error });
+                });
         };
         this.client.on('tokenAboutToExpire', refreshToken);
     }

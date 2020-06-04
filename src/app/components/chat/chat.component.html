@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row">
+    <div class="row col-md-8">
         <div class="col-md-2 led-box">
             <div
                 [ngClass]="{
@@ -19,11 +19,8 @@
         </div>
     </div>
     <div *ngIf="!isConnected" class="row">
-        <div class="col-md-12">
-            <h4>
-                Chat with one of our tax professionals right now. Click the
-                "CHAT" button.
-            </h4>
+        <div class="col-md-6">
+            <h4>{{ status }}</h4>
         </div>
         <div class="row col-md-12">
             <div class="col-md-4">
@@ -50,9 +47,8 @@
         <div class="col-md-12">
             <h4>
                 {{
-                    "You're connected to " +
-                        activeChannel?.friendlyName +
-                        ". Start chatting now."
+                    "You're connected to the channel " +
+                        activeChannel?.friendlyName
                 }}
             </h4>
         </div>
