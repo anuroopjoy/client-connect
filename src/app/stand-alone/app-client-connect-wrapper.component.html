@@ -28,9 +28,14 @@
     <!--  end-region : chat  -->
 
     <!--  region : email  -->
-    <input name="nav" type="radio" class="email-radio" id="email" [(ngModel)]="selectedMode"
-    value="Email"
-/>
+    <input
+        name="nav"
+        type="radio"
+        class="email-radio"
+        id="email"
+        [(ngModel)]="selectedMode"
+        value="Email"
+    />
     <div class="page email-page" *ngIf="selectedMode === 'Email'">
         <div class="page-contents">
             <h1>Email</h1>
@@ -51,8 +56,14 @@
     <!--  end-region : email  -->
 
     <!--  region : voice-call  -->
-    <input name="nav" type="radio" class="voice-radio" id="voice" [(ngModel)]="selectedMode"
-    value="Voice"/>
+    <input
+        name="nav"
+        type="radio"
+        class="voice-radio"
+        id="voice"
+        [(ngModel)]="selectedMode"
+        value="Voice"
+    />
     <div class="page voice-page" *ngIf="selectedMode === 'Voice'">
         <div>
             <p>
@@ -72,8 +83,14 @@
     <!--  end-region : voice-call  -->
 
     <!--  region : video-call  -->
-    <input name="nav" type="radio" class="video-radio" id="video" [(ngModel)]="selectedMode"
-    value="Video" />
+    <input
+        name="nav"
+        type="radio"
+        class="video-radio"
+        id="video"
+        [(ngModel)]="selectedMode"
+        value="Video"
+    />
     <div class="page video-page" *ngIf="selectedMode === 'Video'">
         <div class="page-contents">
             <p>
