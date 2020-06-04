@@ -186,26 +186,30 @@
 // SECTION FOR CHAT MESSAGES
 // -------------------------
 
-#channel-messages ul {
+.channel-messages {
+    margin: 0px 0px 8px 8px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.channel-messages ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-#channel-messages li {
+.channel-messages li {
     padding: 10px;
     position: relative;
 }
 
-#channel-messages li > img {
+.channel-messages li > img {
     width: 15px;
     height: 15pxpx;
-    border-radius: 15px;
-    border: 2px solid #333;
     margin-right: 5px;
 }
 
-#channel-messages p.author {
+.channel-messages p.author {
     display: inline-block;
     font-weight: bold;
     margin: 0;
@@ -213,7 +217,7 @@
     width: calc(100% - 90px);
 }
 
-#channel-messages p.body {
+.channel-messages p.body {
     margin: 0 0 0 35px;
     padding: 0;
     width: calc(100% - 90px);
