@@ -1,3 +1,5 @@
+export const BWO_CHANNEL_NAME = 'BWO-CHAT';
+
 export function addMessage() {
 
 }

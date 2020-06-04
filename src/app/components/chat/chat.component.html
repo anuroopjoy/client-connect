@@ -1,34 +1,100 @@
-<form class="page-form">
-    <div class="led-box">
-        <div
-            [ngClass]="{
-                'led-green': connectionState === 'connected',
-                'led-red': connectionState !== 'connected'
-            }"
-        ></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2 led-box">
+            <div
+                [ngClass]="{
+                    'led-green': isConnected,
+                    'led-red': !isConnected
+                }"
+            ></div>
+        </div>
+        <div class="col-md-6">
+            <h2>
+                {{
+                    isConnected
+                        ? userName + ", You're Online."
+                        : "You're Offline."
+                }}
+            </h2>
+        </div>
     </div>
-    <div>
-        <h1>
-            {{
-                connectionState === "connected"
-                    ? "You're Online."
-                    : "You're Offline."
-            }}
-        </h1>
+    <div *ngIf="!isConnected" class="row">
+        <div class="col-md-12">
+            <h4>Please provide your name to start the chat session.</h4>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-4">
+                <input
+                    name="userName"
+                    class="form-control"
+                    placeholder="Enter your name"
+                    type="text"
+                    [(ngModel)]="userName"
+                />
+            </div>
+            <div class="col-md-2">
+                <button
+                    class="btn btn-md btn-primary"
+                    [disabled]="!userName"
+                    (click)="connect()"
+                >
+                    CHAT
+                </button>
+            </div>
+        </div>
     </div>
-    <div *ngIf="connectionState !== 'connected'" class="form-group">
-        <h3>Please provide your name to start the chat session.</h3>
-        <label class="text-label">User Name</label>
-        <input
-            name="userName"
-            class="form-control"
-            placeholder="Enter your name"
-            type="text"
-            [(ngModel)]="userName"
-        />
+    <div *ngIf="isConnected" class="row">
+        <div class="col-md-12">
+            <h4>
+                {{
+                    "You're connected to " +
+                        activeChannel?.friendlyName +
+                        ". Start chatting now."
+                }}
+            </h4>
+        </div>
+        <div id="channel" class="col-md-12">
+            <div id="channel-body">
+                <div id="channel-messages">
+                    <ul
+                        *ngFor="
+                            let message of activeChannelMessages;
+                            let i = index
+                        "
+                    >
+                        <li>
+                            <img
+                                src="../../../assets/images/icons8-user-male-26.png"
+                            />
+                            <p class="author">
+                                {{ message?.author }}
+                                <span class="timestamp">
+                                    {{
+                                        message?.dateUpdated | date: "shortTime"
+                                    }}
+                                </span>
+                            </p>
+                            <p class="body">{{ message?.body }}</p>
+                        </li>
+                    </ul>
+                </div>
+                <input
+                    type="text"
+                    id="message-body-input"
+                    [(ngModel)]="messageToSend"
+                />
+                <button
+                    id="send-message"
+                    class="btn-transparent"
+                    (click)="sendMessage()"
+                >
+                    <img
+                        src="../../../assets/images/icons8-forward-100.png"
+                        width="30"
+                        height="30"
+                    />
+                </button>
+            </div>
+        </div>
     </div>
-    <div *ngIf="connectionState !== 'connected'" class="form-group">
-        <label class="text-label"></label>
-        <button class="btn btn-primary" (click)="connect()">Start</button>
-    </div>
-</form>
+</div>

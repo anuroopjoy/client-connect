@@ -1,11 +1,11 @@
 // tslint:disable: no-any
-import { isEmpty, each, find, isUndefined } from 'lodash-es';
-
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
-import { addMessage, removeMessage, updateMessage, updateMember, updateActiveChannel } from './chat-helper';
+import { Component } from '@angular/core';
+import { each, find, isEmpty, isUndefined } from 'lodash-es';
 
-const TwilioChat = require('twilio-chat');
+import { BWO_CHANNEL_NAME } from './chat-helper';
+
+const { Client } = require('twilio-chat');
 
 @Component({
     selector: 'app-chat',
@@ -21,14 +21,15 @@ export class ChatComponent {
     };
 
     public messages: string[];
-    public connectionState: string;
+    public isConnected = false;
+    public activeChannel: any;
+    public activeChannelMessages: any[];
+    public messageToSend: string;
 
     private apiUrls = {
         getToken: '/getToken'
     };
     private client: any;
-
-    private activeChannel: any;
 
     constructor(private http: HttpClient) {
     }
@@ -41,23 +42,25 @@ export class ChatComponent {
         }
     }
 
+    public sendMessage() {
+        if (this.activeChannel) {
+            this.activeChannel.sendMessage(this.messageToSend)
+                .then((response: any) => {
+                })
+                .catch((error: any) => {
+                    console.error('ERROR! : Unable to send messages to ' + this.activeChannel.friendlyName, { error });
+                });
+        }
+    }
+
     private onChannelEvents() {
 
         let subscribedChannels: any[] = [];
 
-        const setActiveChannel = (channel: any) => {
-            if (this.activeChannel) {
-                this.activeChannel.removeListener('messageAdded', addMessage);
-                this.activeChannel.removeListener('messageRemoved', removeMessage);
-                this.activeChannel.removeListener('messageUpdated', updateMessage);
-                this.activeChannel.removeListener('updated', updateActiveChannel);
-                this.activeChannel.removeListener('memberUpdated', updateMember);
-            }
-        };
-
         const updateChannels = (page: any) => {
             subscribedChannels = page.items
                 .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
+            this.activeChannel = find(subscribedChannels, channel => channel.friendlyName === BWO_CHANNEL_NAME);
             each(subscribedChannels, (channel) => {
                 switch (channel.status) {
                     case 'joined':
@@ -71,6 +74,11 @@ export class ChatComponent {
                         break;
                 }
             });
+            if (this.activeChannel) {
+                this.setActiveChannel();
+            } else {
+                this.createChannel();
+            }
         };
 
         const updatePublicChannels = (page: any) => {
@@ -84,7 +92,8 @@ export class ChatComponent {
                         .then((pChannel: { join: () => Promise<any>; }) => {
                             pChannel.join()
                                 .then(qChannel => {
-                                    setActiveChannel(qChannel);
+                                    this.activeChannel = qChannel;
+                                    this.setActiveChannel();
                                     // removePublicChannel(qChannel);
                                 })
                                 .catch((error: any) => {
@@ -115,7 +124,9 @@ export class ChatComponent {
 
     private onConnectionStateEvents() {
         const onConnectionChange = () => {
-            this.connectionState = this.client.connectionState;
+            if (this.client.connectionState === 'connected') {
+                this.isConnected = true;
+            }
         };
         this.client.on('connectionStateChanged', onConnectionChange);
     }
@@ -127,7 +138,7 @@ export class ChatComponent {
                 params: { identity: this.userName, device: 'browser' },
                 responseType: 'text'
             }).toPromise().then((token: any) => {
-                (TwilioChat.Client.create(token, { logLevel: 'info' }) as Promise<any>)
+                (Client.create(token, { logLevel: 'info' }) as Promise<any>)
                     .then((client) => {
                         this.client = client;
                         this.subscribeToClientEvents();
@@ -163,13 +174,31 @@ export class ChatComponent {
         this.client.on('tokenAboutToExpire', refreshToken);
     }
 
+    private setActiveChannel() {
+        this.activeChannel.getMessages(30)
+            .then((page: any) => {
+                this.activeChannelMessages = page.items;
+            });
+    }
+
     private createChannel() {
         this.client.createChannel({
-            attributes: { description: 'Chat with tax professionals' },
-            friendlyName: 'BWO-CHAT',
+            attributes: { description: 'BlockWorks Customer Support' },
+            friendlyName: BWO_CHANNEL_NAME,
             isPrivate: true,
-            uniqueName: 'BWO-CHAT'
-        });
+            uniqueName: BWO_CHANNEL_NAME
+        })
+            .then((channel: any) => {
+                channel.join()
+                    .then(() => {
+                        this.activeChannel = channel;
+                        this.setActiveChannel();
+                    })
+                    .catch((error: any) => { console.error('ERROR! : Unable to join channel.', { error }); });
+            })
+            .catch((error: any) => {
+                console.error('ERROR! : Unable to create new channel.', { error });
+            });
     }
 
 }
