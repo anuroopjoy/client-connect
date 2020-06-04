@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
 })
 export class AppClientConnectWrapperComponent {
 
-    public selectedMode = 'Chat';
+    public selectedMode = 'Video';
 
     public setSelectedMode(mode: string) {
         this.selectedMode = mode;
