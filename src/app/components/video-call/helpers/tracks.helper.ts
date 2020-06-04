@@ -14,12 +14,7 @@ export async function useLocalAudioTrack() {
             })
         );
     };
-    let track = await getLocalAudioTrack();
-
-    const handleStopped = () => { track = undefined; };
-    if (track) {
-        track.on('stopped', handleStopped);
-    }
+    const track = await getLocalAudioTrack();
 
     return [track, getLocalAudioTrack];
 }
@@ -47,13 +42,7 @@ export async function useLocalVideoTrack() {
     };
 
     // We get a new local video track when the app loads.
-    let track = await getLocalVideoTrack();
-
-    const handleStopped = () => { track = undefined; };
-    if (track) {
-        track.on('stopped', handleStopped);
-    }
-
+    const track = await getLocalVideoTrack();
     return [track, getLocalVideoTrack];
 }
 
