@@ -1,4 +1,4 @@
-import Video, { VideoTrack } from 'twilio-video';
+import Video, { VideoTrack, Track, LogLevels } from 'twilio-video';
 
 export type RenderDimensionValue =
     | 'low'
@@ -27,4 +27,10 @@ export interface IRenderDimension {
     label: string;
     value: RenderDimensionValue;
     resolution?: VideoTrack.Dimensions;
+}
+
+export interface IMediaStreamTrackPublishOptions {
+    name?: string;
+    priority: Track.Priority;
+    logLevel: LogLevels;
 }
