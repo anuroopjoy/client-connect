@@ -7,6 +7,7 @@ import EventEmitter from 'events';
 import { initialSettings } from './constants/settings.constants';
 import generateConnectionOptions from './helpers/video-settings.helper';
 import useLocalTracks from './helpers/tracks.helper';
+import { IMediaStreamTrackPublishOptions } from './interfaces/settings.interface';
 
 @Component({
     selector: 'app-video-call',
@@ -19,9 +20,11 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public videoStyle: any;
     public isAudioEnabled: boolean;
     public isVideoEnabled: boolean;
+    public isScreenShared = false;
     @ViewChild('vid') public vid: ElementRef;
     public toggleAudio: () => void;
     public toggleVideo: () => void;
+    public stopScreenShareRef: () => void;
 
     private name = 'anuroop'; // TO DO take user name
     private room = 'bwo';
@@ -41,6 +44,13 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         });
     }
 
+    public toggleSharing() {
+        !this.isScreenShared ? this.getScreenShare(this.twilioRoom) : this.stopScreenShareRef();
+    }
+
+    public endCall() {
+        this.twilioRoom.disconnect();
+    }
     private async initializeDevices() {
         const result = await useLocalTracks();
         let { localTracks } = result;
@@ -65,7 +75,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         this.videoStyle = isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
         this.getAudioTrack(localTracks);
         this.getVideoTrack(localTracks);
-        // this.connectToRoom(token, localTracks);
+        this.connectToRoom(token, localTracks);
     }
 
     private async connectToRoom(token: string, localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[]) {
@@ -149,4 +159,32 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
             }
         };
     }
+    private getScreenShare(room: Video.Room) {
+        navigator.mediaDevices.getDisplayMedia({
+            audio: false,
+            video: {
+                frameRate: 10,
+                height: 1080,
+                width: 1920,
+            },
+        }).then(stream => {
+            const track = stream.getTracks()[0];
+            room.localParticipant
+                .publishTrack(track, {
+                    name: 'screen', // Tracks can be named to easily find them later
+                    priority: 'low', // Priority is set to high by the subscriber when the video track is rendered
+                } as IMediaStreamTrackPublishOptions).then(trackPublication => {
+                    this.stopScreenShareRef = () => {
+                        room.localParticipant.unpublishTrack(track);
+                        // TODO: remove this if the SDK is updated to emit this event
+                        room.localParticipant.emit('trackUnpublished', trackPublication);
+                        track.stop();
+                        this.isScreenShared = false;
+                    };
+                    track.onended = this.stopScreenShareRef;
+                    this.isScreenShared = true;
+                });
+        });
+    }
+
 }
