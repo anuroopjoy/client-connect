@@ -15,6 +15,7 @@ export class VoiceCallComponent implements OnInit {
     public status = 'Connecting to Twilio...';
     public noCallInProgress = true;
     public incomingCall = false;
+    public customerPhone: string;
     public answerCallback: () => void;
 
     constructor(private http: HttpClient) { }
