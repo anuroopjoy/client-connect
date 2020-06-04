@@ -1,11 +1,11 @@
 // tslint:disable: no-any
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { each, find, isEmpty, isUndefined } from 'lodash-es';
 
 import { BWO_CHANNEL_NAME } from './chat-helper';
 
-const { Client } = require('twilio-chat');
+const Client = require('twilio-chat').Client;
 
 @Component({
     selector: 'app-chat',
@@ -14,22 +14,21 @@ const { Client } = require('twilio-chat');
 })
 export class ChatComponent {
 
-    public userName = '';
-
+    public activeChannel: any;
+    public activeChannelMessages: any[];
     public channels: { [key: string]: any } = {
         joined: [], invited: [], unknown: [], common: []
     };
-
-    public messages: string[];
     public isConnected = false;
-    public activeChannel: any;
-    public activeChannelMessages: any[];
     public messageToSend: string;
+    public messages: string[];
+    public userName = '';
 
     private apiUrls = {
         getToken: '/getToken'
     };
     private client: any;
+    @ViewChild('messagePanel') private messagePanel: ElementRef;
 
     constructor(private http: HttpClient) {
     }
@@ -45,7 +44,8 @@ export class ChatComponent {
     public sendMessage() {
         if (this.activeChannel) {
             this.activeChannel.sendMessage(this.messageToSend)
-                .then((response: any) => {
+                .then(() => {
+                    // Your message has been sent.
                 })
                 .catch((error: any) => {
                     console.error('ERROR! : Unable to send messages to ' + this.activeChannel.friendlyName, { error });
@@ -53,10 +53,49 @@ export class ChatComponent {
         }
     }
 
+    private createChannel() {
+        this.client.createChannel({
+            attributes: { description: 'BlockWorks Customer Support' },
+            friendlyName: BWO_CHANNEL_NAME,
+            isPrivate: true,
+            uniqueName: BWO_CHANNEL_NAME
+        })
+            .then((channel: any) => {
+                channel.join()
+                    .then(() => {
+                        this.activeChannel = channel;
+                        this.setActiveChannel();
+                    })
+                    .catch((error: any) => { console.error('ERROR! : Unable to join channel.', { error }); });
+            })
+            .catch((error: any) => {
+                console.error('ERROR! : Unable to create new channel.', { error });
+            });
+    }
+
+    private initializeChat() {
+        try {
+            this.http.get(
+                this.apiUrls.getToken, {
+                params: { identity: this.userName, device: 'browser' },
+                responseType: 'text'
+            }).toPromise().then((token: any) => {
+                (Client.create(token, { logLevel: 'info' }) as Promise<any>)
+                    .then((client) => {
+                        this.client = client;
+                        this.subscribeToClientEvents();
+                    })
+                    .catch((error) => {
+                        console.error('ERROR! : Unable to create Twilio client.', { error });
+                    });
+            });
+        } catch (error) {
+            console.error('ERROR! : Unable to fetch the chat service token.', { error });
+        }
+    }
+
     private onChannelEvents() {
-
         let subscribedChannels: any[] = [];
-
         const updateChannels = (page: any) => {
             subscribedChannels = page.items
                 .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
@@ -123,39 +162,8 @@ export class ChatComponent {
     }
 
     private onConnectionStateEvents() {
-        const onConnectionChange = () => {
-            if (this.client.connectionState === 'connected') {
-                this.isConnected = true;
-            }
-        };
+        const onConnectionChange = () => { this.isConnected = this.client.connectionState === 'connected'; };
         this.client.on('connectionStateChanged', onConnectionChange);
-    }
-
-    private async initializeChat() {
-        try {
-            this.http.get(
-                this.apiUrls.getToken, {
-                params: { identity: this.userName, device: 'browser' },
-                responseType: 'text'
-            }).toPromise().then((token: any) => {
-                (Client.create(token, { logLevel: 'info' }) as Promise<any>)
-                    .then((client) => {
-                        this.client = client;
-                        this.subscribeToClientEvents();
-                    })
-                    .catch((error) => {
-                        console.error('ERROR! : Unable to create Twilio client.', { error });
-                    });
-            });
-        } catch (error) {
-            console.error('ERROR! : Unable to fetch the chat service token.', { error });
-        }
-    }
-
-    private async subscribeToClientEvents() {
-        this.onTokenRefreshEvent();
-        this.onChannelEvents();
-        this.onConnectionStateEvents();
     }
 
     private onTokenRefreshEvent() {
@@ -174,31 +182,32 @@ export class ChatComponent {
         this.client.on('tokenAboutToExpire', refreshToken);
     }
 
+    private scrollToLastMessage() {
+        const element = this.messagePanel.nativeElement;
+        setTimeout(() => { element.scrollTop = element.scrollHeight; }, 0);
+    }
+
     private setActiveChannel() {
         this.activeChannel.getMessages(30)
             .then((page: any) => {
                 this.activeChannelMessages = page.items;
+                this.scrollToLastMessage();
             });
+        this.activeChannel.on('messageAdded', (message: any) => {
+            this.activeChannelMessages.push(message);
+            this.messageToSend = '';
+            this.scrollToLastMessage();
+        });
+        this.activeChannel.on('messageUpdated', ({ message }: any) => {
+            let messageToUpdate = find(this.activeChannelMessages, { index: message.index });
+            if (messageToUpdate) { messageToUpdate = { ...message }; }
+        });
     }
 
-    private createChannel() {
-        this.client.createChannel({
-            attributes: { description: 'BlockWorks Customer Support' },
-            friendlyName: BWO_CHANNEL_NAME,
-            isPrivate: true,
-            uniqueName: BWO_CHANNEL_NAME
-        })
-            .then((channel: any) => {
-                channel.join()
-                    .then(() => {
-                        this.activeChannel = channel;
-                        this.setActiveChannel();
-                    })
-                    .catch((error: any) => { console.error('ERROR! : Unable to join channel.', { error }); });
-            })
-            .catch((error: any) => {
-                console.error('ERROR! : Unable to create new channel.', { error });
-            });
+    private subscribeToClientEvents() {
+        this.onTokenRefreshEvent();
+        this.onChannelEvents();
+        this.onConnectionStateEvents();
     }
 
 }

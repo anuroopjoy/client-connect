@@ -20,7 +20,10 @@
     </div>
     <div *ngIf="!isConnected" class="row">
         <div class="col-md-12">
-            <h4>Please provide your name to start the chat session.</h4>
+            <h4>
+                Chat with one of our tax professionals right now. Click the
+                "CHAT" button.
+            </h4>
         </div>
         <div class="row col-md-12">
             <div class="col-md-4">
@@ -54,35 +57,43 @@
             </h4>
         </div>
         <div id="channel" class="col-md-12">
-            <div id="channel-body">
-                <div id="channel-messages">
-                    <ul
-                        *ngFor="
-                            let message of activeChannelMessages;
-                            let i = index
-                        "
+            <div #messagePanel class="col-md-6 channel-messages">
+                <ul
+                    *ngFor="let message of activeChannelMessages; let i = index"
+                >
+                    <li
+                        [ngStyle]="{
+                            'text-align':
+                                message?.author === userName ? 'right' : 'left'
+                        }"
                     >
-                        <li>
-                            <img
-                                src="../../../assets/images/icons8-user-male-26.png"
-                            />
-                            <p class="author">
-                                {{ message?.author }}
-                                <span class="timestamp">
-                                    {{
-                                        message?.dateUpdated | date: "shortTime"
-                                    }}
-                                </span>
-                            </p>
-                            <p class="body">{{ message?.body }}</p>
-                        </li>
-                    </ul>
-                </div>
+                        <img
+                            *ngIf="message?.author !== userName"
+                            src="../../../assets/images/icons8-user-male-26.png"
+                        />
+                        <p class="author">
+                            {{ message?.author }}
+                            <span class="timestamp">
+                                {{ message?.dateUpdated | date: "shortTime" }}
+                            </span>
+                        </p>
+                        <p class="body">{{ message?.body }}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="chat-text-box" class="col-md-12">
+            <div class="col-md-6">
                 <input
                     type="text"
                     id="message-body-input"
+                    class="form-control"
+                    placeholder="Type a new message"
                     [(ngModel)]="messageToSend"
+                    (keydown.enter)="sendMessage()"
                 />
+            </div>
+            <div class="col-md-2">
                 <button
                     id="send-message"
                     class="btn-transparent"
