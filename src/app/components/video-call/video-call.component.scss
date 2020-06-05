@@ -2,7 +2,7 @@
     display: grid;
     grid-template-rows: auto 1fr;
     width: 100%;
-    height:675px;
+    height: 675px;
 }
 
 .vid-holder {
@@ -96,6 +96,12 @@
     margin: 8px;
 }
 
+.MuiFab-root.Mui-disabled {
+    color: rgba(225, 225, 225, 0.8);
+    background-color: rgba(175, 175, 175, 0.6);
+    box-shadow: none;
+}
+
 .jss1545 {
     height: 500px;
     display: grid;
@@ -109,6 +115,7 @@
     overflow-y: auto;
     padding: 0.5em;
 }
+
 .jss1550 {
     cursor: pointer;
     height: 146.25px;
@@ -117,12 +124,14 @@
     position: relative;
     align-items: center;
 }
+
 .jss1824 {
     display: flex;
     position: relative;
     grid-area: participantList;
     align-items: center;
 }
+
 .jss1827 {
     width: 100%;
     height: 100%;
@@ -130,6 +139,7 @@
     z-index: 1;
     position: absolute;
 }
+
 .jss1826 {
     margin: 1em;
     display: inline-flex;

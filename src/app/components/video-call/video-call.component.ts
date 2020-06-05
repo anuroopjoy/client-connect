@@ -29,6 +29,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public twilioRoom: Video.Room;
     public style: any;
     public selectedParticipant: Participant;
+    public sharingInProgress: boolean;
 
     private name = 'anuroop'; // TO DO take user name
     private room = 'bwo';
@@ -240,11 +241,26 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         this.getTracks(publications, participant);
     }
     private getTracks(publications: TrackPublication[], participant: Participant) {
+        let filteredPublications: TrackPublication[];
+        if (publications.some(p => p.trackName.includes('screen'))) {
+            filteredPublications = publications.filter(p => !p.trackName.includes('camera'));
+        } else {
+            filteredPublications = publications.filter(p => !p.trackName.includes('screen'));
+        }
         // tslint:disable-next-line: no-any
-        const videoPublication: any = publications.find((track: any) => track.kind === 'video' && track.trackName.includes('camera'));
+        const videoPublication: any = filteredPublications.find((track: any) => track.kind === 'video');
         if (!videoPublication) { return; }
         const callback = (track: any) => {
             if (!track) { return; }
+            const sharingParticipant = Array.from<Participant>(this.twilioRoom.participants.values())
+                // the screenshare participant could be the localParticipant
+                .concat(this.twilioRoom.localParticipant)
+                .find((parties: Participant) =>
+                    Array.from<TrackPublication>(parties.tracks.values()).find(trk =>
+                        trk.trackName.includes('screen')
+                    )
+                );
+            this.sharingInProgress = sharingParticipant && sharingParticipant !== this.twilioRoom.localParticipant;
             const isFrontFacing = track.mediaStreamTrack.getSettings().facingMode !== 'environment';
             const isLocal = participant === this.twilioRoom.localParticipant && track.name.includes('camera');
             this.style = isLocal && isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
