@@ -255,12 +255,12 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
             const sharingParticipant = Array.from<Participant>(this.twilioRoom.participants.values())
                 // the screenshare participant could be the localParticipant
                 .concat(this.twilioRoom.localParticipant)
-                .find((parties: Participant) =>
+                .find((parties: Participant): any =>
                     Array.from<TrackPublication>(parties.tracks.values()).find(trk =>
                         trk.trackName.includes('screen')
                     )
                 );
-            this.sharingInProgress = sharingParticipant && sharingParticipant !== this.twilioRoom.localParticipant;
+            this.sharingInProgress = !!sharingParticipant && sharingParticipant !== this.twilioRoom.localParticipant;
             const isFrontFacing = track.mediaStreamTrack.getSettings().facingMode !== 'environment';
             const isLocal = participant === this.twilioRoom.localParticipant && track.name.includes('camera');
             this.style = isLocal && isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
