@@ -8,6 +8,7 @@ import { initialSettings } from './constants/settings.constants';
 import generateConnectionOptions from './helpers/video-settings.helper';
 import useLocalTracks from './helpers/tracks.helper';
 import { IMediaStreamTrackPublishOptions } from './interfaces/settings.interface';
+import { ClientService } from 'src/app/stand-alone/client-details.service';
 
 @Component({
     selector: 'app-video-call',
@@ -32,15 +33,16 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public sharingInProgress: boolean;
     public initialLoad = false;
 
-    private name = 'anuroop'; // TO DO take user name
+    private name: string;
     private room = 'bwo';
     private passCode = '6497297644';
     private token: string;
     private localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[];
     private getLocalVideoTrack: ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private userDetails: ClientService) { }
     public async ngOnInit() {
+        this.name = this.userDetails.getUserDetails().name;
         const { token, localTracks } = await this.initializeDevices();
         this.token = token;
         this.localTracks = localTracks;

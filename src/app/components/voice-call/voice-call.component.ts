@@ -1,6 +1,7 @@
 // tslint:disable: no-any
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ClientService } from 'src/app/stand-alone/client-details.service';
 
 const Device = require('twilio-client').Device;
 
@@ -10,17 +11,18 @@ const Device = require('twilio-client').Device;
     styleUrls: ['./voice-call.component.scss']
 })
 export class VoiceCallComponent implements OnInit {
-    public mode = 'Customer'; // TO DO need to set this value from User profile
-    // public mode = 'TaxPro';
+    // mode = 'TaxPro'/'Customer'
+    public mode: string;
     public status = 'Connecting to Twilio...';
     public noCallInProgress = true;
     public incomingCall = false;
     public customerPhone: string;
     public answerCallback: () => void;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private userDetails: ClientService) { }
 
     public async ngOnInit() {
+        this.mode = this.userDetails.getUserDetails().role;
         const param = this.mode === 'TaxPro' ? '/dashboard' : window.location.pathname;
         const data: any = await this.http.post('/token/generate', { page: param }).toPromise();
         // Set up the Twilio Client Device with the token
