@@ -7,13 +7,15 @@ import { ChatComponent } from './chat/chat.component';
 import { EmailComponent } from './email/email.component';
 import { VideoCallComponent } from './video-call/video-call.component';
 import { VoiceCallComponent } from './voice-call/voice-call.component';
+import { ParticipantTrackComponent } from './video-call/participantTrack/participant-track.component';
 
 @NgModule({
     declarations: [
         EmailComponent,
         ChatComponent,
         VideoCallComponent,
-        VoiceCallComponent
+        VoiceCallComponent,
+        ParticipantTrackComponent
     ],
     imports: [
         FormsModule,

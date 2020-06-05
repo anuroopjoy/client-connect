@@ -1,7 +1,7 @@
 // tslint:disable: no-any
 import { Component, AfterViewInit, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
+import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant } from 'twilio-video';
 import EventEmitter from 'events';
 
 import { initialSettings } from './constants/settings.constants';
@@ -25,11 +25,12 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public toggleAudio: () => void;
     public toggleVideo: () => void;
     public stopScreenShareRef: () => void;
+    public participants: Participant[];
+    public twilioRoom: Video.Room;
 
     private name = 'anuroop'; // TO DO take user name
     private room = 'bwo';
     private passCode = '6497297644';
-    private twilioRoom: Video.Room;
     private getLocalVideoTrack: ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
 
     constructor(private http: HttpClient) { }
@@ -115,6 +116,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         newRoom.localParticipant.on('trackPublicationFailed', onErrorCallback);
         newRoom.on('reconnected', onStatusCallback);
         newRoom.on('reconnecting', onStatusCallback);
+        this.setParticipants();
     }
 
     private getAudioTrack(localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[]) {
@@ -187,4 +189,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         });
     }
 
+    private setParticipants() {
+        this.participants = [this.twilioRoom.localParticipant, ...Array.from(this.twilioRoom.participants.values())];
+    }
 }

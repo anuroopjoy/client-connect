@@ -5,13 +5,29 @@
     src="https://video-app-7644-dev.twil.io?passcode=6497297644"
 ></iframe> -->
 
-<div class="vid-container" [ngStyle]="{height: innerHeight}">
+<div class="vid-container">
     <main style="overflow: hidden;">
         <ng-container *ngIf="roomState === 'disconnected'">
             <video #vid class="vid-holder" [ngStyle]="videoStyle"></video>
         </ng-container>
         <ng-container *ngIf="roomState !== 'disconnected'">
-
+            <div class="jss1545">
+                <aside class="jss1547">
+                    <div>
+                        <div class="jss1550" *ngFor="let participant of participants">
+                            <app-participant-track [participant]="participant" [isLocal]="participant ===  twilioRoom.localParticipant"></app-participant-track>
+                        </div>
+                    </div>
+                </aside>
+                <div data-cy-main-participant="true" class="jss1824">
+                    <div class="jss1827">
+                        <h4 class="jss1826">
+                            anuroop
+                        </h4>
+                    </div>
+                    <video class="vid-holder" style="transform: rotateY(180deg);"></video>
+                </div>
+            </div>
         </ng-container>
         <div class="control-container" [ngClass]="{'showControls': roomState === 'disconnected'}">
             <button class="MuiButtonBase-root MuiFab-root" [disabled]="roomState === 'reconnecting'" [attr.title]="isAudioEnabled ? 'Mute Audio' : 'Unmute Audio'"
