@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+
+import { ClientService } from '../stand-alone/client-details.service';
 
 /**
  * Micro TaxFlow Wrapper Component
@@ -10,10 +12,29 @@ import { Component } from '@angular/core';
 })
 export class MicroClientConnectWrapperComponent {
 
+    @Input() public set user(value: string) {
+        if (value) {
+            this.pUser = value;
+            this.userDetails.setUserDetails({ role: 'TaxPro', name: this.pUser });
+        }
+    }
+    public get user(): string {
+        return this.pUser;
+    }
     public expandedView = false;
+    public app = '';
+
+    private pUser: string;
+
+    constructor(private userDetails: ClientService) {
+    }
 
     public toggleWidget() {
         this.expandedView = !this.expandedView;
+    }
+
+    public selectApp(app: string) {
+        this.app = app;
     }
 
 }
