@@ -147,3 +147,20 @@
     font-size: 1.2em;
     background: rgba(0, 0, 0, 0.7);
 }
+
+.MuiIconButton-root {
+    flex: 0 0 auto;
+    color: #fff;
+    padding: 12px;
+    overflow: visible;
+    font-size: 1.5rem;
+    text-align: center;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-radius: 50%;
+}
+.MuiIconButton-label {
+    width: 100%;
+    display: flex;
+    align-items: inherit;
+    justify-content: inherit;
+}

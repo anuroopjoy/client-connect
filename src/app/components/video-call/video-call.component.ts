@@ -3,6 +3,7 @@ import { Component, AfterViewInit, OnInit, ElementRef, ViewChild } from '@angula
 import { HttpClient } from '@angular/common/http';
 import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant, RemoteParticipant, TrackPublication } from 'twilio-video';
 import EventEmitter from 'events';
+import fscreen from 'fscreen';
 
 import { initialSettings } from './constants/settings.constants';
 import generateConnectionOptions from './helpers/video-settings.helper';
@@ -32,6 +33,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public selectedParticipant: Participant;
     public sharingInProgress: boolean;
     public initialLoad = false;
+    public isFullScreen = false;
 
     private name: string;
     private room = 'bwo';
@@ -46,6 +48,8 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         const { token, localTracks } = await this.initializeDevices();
         this.token = token;
         this.localTracks = localTracks;
+        const onFullScreenChange = () => { this.isFullScreen = !!fscreen.fullscreenElement; };
+        fscreen.addEventListener('fullscreenchange', onFullScreenChange);
         this.connectToRoom(token, localTracks);
     }
 
@@ -79,6 +83,10 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
 
     public joinRoom() {
         this.connectToRoom(this.token, this.localTracks);
+    }
+
+    public toggleFullScreen() {
+        this.isFullScreen ? fscreen.exitFullscreen() : fscreen.requestFullscreen(this.vid.nativeElement);
     }
     private async initializeDevices(): Promise<any> {
         return new Promise(async (resolve) => {
