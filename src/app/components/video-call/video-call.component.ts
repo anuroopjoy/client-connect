@@ -1,7 +1,7 @@
 // tslint:disable: no-any
 import { Component, AfterViewInit, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant } from 'twilio-video';
+import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant, RemoteParticipant } from 'twilio-video';
 import EventEmitter from 'events';
 
 import { initialSettings } from './constants/settings.constants';
@@ -191,5 +191,13 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
 
     private setParticipants() {
         this.participants = [this.twilioRoom.localParticipant, ...Array.from(this.twilioRoom.participants.values())];
+        const participantConnected = (participant: RemoteParticipant) => {
+            this.participants = [...this.participants, participant];
+        };
+        const participantDisconnected = (participant: RemoteParticipant) => {
+            this.participants = this.participants.filter(p => p !== participant);
+        };
+        this.twilioRoom.on('participantConnected', participantConnected);
+        this.twilioRoom.on('participantDisconnected', participantDisconnected);
     }
 }
