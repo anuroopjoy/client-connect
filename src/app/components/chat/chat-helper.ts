@@ -1,5 +1,3 @@
-export const BWO_CHANNEL_NAME = 'BWO-CHAT';
-
 export const CONNECTION_STATUS = {
     initial: 'Chat with one of our tax professionals right now. Click the "CHAT" button.',
     connecting: 'Please wait. We are connecting you...',
@@ -10,3 +8,16 @@ export const CONNECTION_STATUS = {
 export const API_URLS = {
     getToken: '/getToken'
 };
+
+export const DEFAULT_CHANNEL = {
+    name: 'BWO-CHAT',
+    uniqueName: 'BWO-CHAT',
+    description: 'BWO Chat Application'
+};
+
+export interface IConnectionState {
+    connected: boolean;
+    disconnected: boolean;
+    connecting: boolean;
+    denied: boolean;
+}

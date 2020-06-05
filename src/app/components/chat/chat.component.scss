@@ -186,6 +186,12 @@
 // SECTION FOR CHAT MESSAGES
 // -------------------------
 
+.typing-indicator {
+    margin-left: 20px;
+    font-size: 0.75em;
+    font-style: italic;
+}
+
 .channel-messages {
     margin: 8px 0px 8px 8px;
     max-height: 400px;

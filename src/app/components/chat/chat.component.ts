@@ -1,9 +1,9 @@
 // tslint:disable: no-any
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { each, find, isEmpty, isUndefined } from 'lodash-es';
+import { each, find, isEmpty, size, first, last } from 'lodash-es';
 
-import { BWO_CHANNEL_NAME, CONNECTION_STATUS, API_URLS } from './chat-helper';
+import { CONNECTION_STATUS, API_URLS, DEFAULT_CHANNEL, IConnectionState } from './chat-helper';
 
 const Client = require('twilio-chat').Client;
 
@@ -19,17 +19,23 @@ export class ChatComponent {
     public channels: { [key: string]: any } = {
         joined: [], invited: [], unknown: [], common: []
     };
-    public isConnected = false;
-    public status = CONNECTION_STATUS.initial;
+    public connectionState: Partial<IConnectionState> = {
+        connected: false,
+        disconnected: true,
+        connecting: false,
+        denied: false
+    };
     public messageToSend: string;
     public messages: string[];
+    public status = CONNECTION_STATUS.initial;
+    public typingMembers = new Set();
+    public typingMsg: string;
     public userName = '';
 
     private client: any;
     @ViewChild('messagePanel') private messagePanel: ElementRef;
 
-    constructor(private http: HttpClient) {
-    }
+    constructor(private http: HttpClient) { }
 
     public connect() {
         if (!isEmpty(this.userName)) {
@@ -53,10 +59,10 @@ export class ChatComponent {
 
     private createChannel() {
         this.client.createChannel({
-            attributes: { description: 'BlockWorks Customer Support' },
-            friendlyName: BWO_CHANNEL_NAME,
+            attributes: { description: DEFAULT_CHANNEL.description },
+            friendlyName: DEFAULT_CHANNEL.name,
             isPrivate: true,
-            uniqueName: BWO_CHANNEL_NAME
+            uniqueName: DEFAULT_CHANNEL.uniqueName
         })
             .then((channel: any) => {
                 channel.join()
@@ -101,7 +107,7 @@ export class ChatComponent {
         const updateChannels = (page: any) => {
             subscribedChannels = page.items
                 .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
-            this.activeChannel = find(subscribedChannels, channel => channel.friendlyName === BWO_CHANNEL_NAME);
+            this.activeChannel = find(subscribedChannels, channel => channel.friendlyName === DEFAULT_CHANNEL.name);
             each(subscribedChannels, (channel) => {
                 switch (channel.status) {
                     case 'joined':
@@ -121,32 +127,6 @@ export class ChatComponent {
                 this.createChannel();
             }
         };
-
-        const updatePublicChannels = (page: any) => {
-            const publicChannels = page.items
-                .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
-            each(publicChannels, (channel) => {
-                const result = find(subscribedChannels, item => item.sid === channel.sid);
-                console.log('Adding public channel ' + channel.sid + ' ' + channel.status + ', result=' + result);
-                if (isUndefined(result)) {
-                    channel.getChannel()
-                        .then((pChannel: { join: () => Promise<any>; }) => {
-                            pChannel.join()
-                                .then(qChannel => {
-                                    this.activeChannel = qChannel;
-                                    this.setActiveChannel();
-                                    // removePublicChannel(qChannel);
-                                })
-                                .catch((error: any) => {
-                                    console.error('ERROR! : Unable to join public channel.', { error });
-                                }).catch((error) => {
-                                    console.error('ERROR! : Unable to get public channel details.', { error });
-                                });
-                        });
-                }
-            });
-        };
-
         this.client.getSubscribedChannels()
             .then((page: any) => {
                 updateChannels(page);
@@ -154,17 +134,18 @@ export class ChatComponent {
             .catch((error: any) => {
                 console.error('ERROR! : Unable to get channel details.', { error });
             });
-        this.client.getPublicChannelDescriptors()
-            .then((page: any) => {
-                updatePublicChannels(page);
-            })
-            .catch((error: any) => {
-                console.error('ERROR! : Unable to get public channel details.', { error });
-            });
     }
 
     private onConnectionStateEvents() {
-        const onConnectionChange = () => { this.isConnected = this.client.connectionState === 'connected'; };
+        const onConnectionChange = () => {
+            const currentState: keyof IConnectionState = this.client.connectionState;
+            const { [currentState]: state, ...others } = this.connectionState;
+            each(others, (val, key, act) => act[key] = false);
+            this.connectionState = {
+                [currentState]: true,
+                ...others
+            };
+        };
         this.client.on('connectionStateChanged', onConnectionChange);
     }
 
@@ -205,12 +186,45 @@ export class ChatComponent {
             let messageToUpdate = find(this.activeChannelMessages, { index: message.index });
             if (messageToUpdate) { messageToUpdate = { ...message }; }
         });
+        this.activeChannel.on('typingStarted', (member: { getUser: () => Promise<any>; identity: any; }) => {
+            member.getUser().then(user => {
+                this.typingMembers.add(user.friendlyName || member.identity);
+                this.updateTypingIndicator();
+            });
+        });
+        this.activeChannel.on('typingEnded', (member: { getUser: () => Promise<{ friendlyName: any; }>; identity: any; }) => {
+            member.getUser().then((user: { friendlyName: any; }) => {
+                this.typingMembers.delete(user.friendlyName || member.identity);
+                this.updateTypingIndicator();
+            });
+        });
     }
 
     private subscribeToClientEvents() {
         this.onTokenRefreshEvent();
         this.onChannelEvents();
         this.onConnectionStateEvents();
+    }
+
+    private updateTypingIndicator() {
+        const members = Array.from(this.typingMembers).slice(0, 3);
+        const typingCount = size(this.typingMembers);
+        if (typingCount > 0) {
+            switch (typingCount) {
+                case 1:
+                    this.typingMsg = first(members) + ' is typing...';
+                    break;
+                case 2:
+                case 3:
+                    this.typingMsg = members.slice(0, typingCount - 1).join(', ')
+                        + ' and ' + last(members) + ' are typing...';
+                    break;
+                default:
+                    this.typingMsg = first(members) + ', and ' + (typingCount - 1) + 'more are typing';
+            }
+        } else {
+            this.typingMsg = '';
+        }
     }
 
 }
