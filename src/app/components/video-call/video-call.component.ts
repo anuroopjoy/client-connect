@@ -30,6 +30,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public style: any;
     public selectedParticipant: Participant;
     public sharingInProgress: boolean;
+    public initialLoad = false;
 
     private name = 'anuroop'; // TO DO take user name
     private room = 'bwo';
@@ -146,6 +147,9 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         newRoom.on('reconnected', onStatusCallback);
         newRoom.on('reconnecting', onStatusCallback);
         this.setParticipants();
+        if (!this.initialLoad) {
+            this.initialLoad = true;
+        }
     }
 
     private getAudioTrack(localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[]) {
