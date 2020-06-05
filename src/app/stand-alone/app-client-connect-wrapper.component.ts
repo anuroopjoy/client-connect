@@ -30,7 +30,7 @@ export class AppClientConnectWrapperComponent implements OnInit, OnDestroy {
                     const role = params.get('role');
                     if (name && role) {
                         this.userDetails.setUserDetails({ name, role });
-                        this.selectedMode = 'Video';
+                        this.selectedMode = 'Chat';
                     } else {
                         alert('User details not available (format - ?name=<name>&role=<role>)');
                     }
