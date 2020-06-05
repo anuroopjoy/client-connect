@@ -37,7 +37,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
 
     private name: string;
     private room = 'bwo';
-    private passCode = '6497297644';
+    private passCode = '8883727644';
     private token: string;
     private localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[];
     private getLocalVideoTrack: ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);

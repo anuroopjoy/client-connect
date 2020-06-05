@@ -1,8 +1,49 @@
+.btn-dark {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #343a40
+}
+
+.btn-dark:hover {
+    color: #fff;
+    background-color: #23272b;
+    border-color: #1d2124
+}
+
+.btn-dark.focus,
+.btn-dark:focus {
+    color: #fff;
+    background-color: #23272b;
+    border-color: #1d2124;
+    box-shadow: 0 0 0 .2rem rgba(82, 88, 93, .5)
+}
+
+.btn-dark.disabled,
+.btn-dark:disabled {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #343a40
+}
+
+.btn-dark:not(:disabled):not(.disabled).active,
+.btn-dark:not(:disabled):not(.disabled):active,
+.show>.btn-dark.dropdown-toggle {
+    color: #fff;
+    background-color: #1d2124;
+    border-color: #171a1d
+}
+
+.btn-dark:not(:disabled):not(.disabled).active:focus,
+.btn-dark:not(:disabled):not(.disabled):active:focus,
+.show>.btn-dark.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(82, 88, 93, .5)
+}
+
 .button__wrapper {
     position: fixed;
     bottom: 10px;
     right: 10px;
-    z-index: 11111
+    z-index: 11111;
 }
 
 .button__wrapper-hidden {
@@ -14,17 +55,18 @@
     min-width: 40px;
     text-align: center;
     position: fixed;
-    bottom: 48px;
+    bottom: 43px;
     right: 20px;
     width: 40px;
     height: 19px;
     padding-top: 2px;
     cursor: pointer;
+    z-index: 11111;
     border: none;
 }
 
 .pointer__wrapper-hidden {
-    bottom: 12px;
+    bottom: 7px;
 }
 
 .pointer__item {
@@ -46,4 +88,13 @@
     transition-property: bottom;
     animation-timing-function: ease;
     transition-duration: 0.5s;
+}
+
+.app--overlay {
+    position: fixed;
+    top: 125px;
+    z-index: 11000;
+    height: 85%;
+    width: 100%;
+    background-color: white;
 }

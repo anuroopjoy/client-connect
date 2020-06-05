@@ -34,7 +34,11 @@ export class MicroClientConnectWrapperComponent {
     }
 
     public selectApp(app: string) {
-        this.app = app;
+        if (this.app === app) {
+            this.app = '';
+        } else {
+            this.app = app;
+        }
     }
 
 }
