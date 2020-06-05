@@ -5,18 +5,15 @@ import { Component } from '@angular/core';
  */
 @Component({
     selector: 'app-micro-client-connect-wrapper',
-    styles:[
-        `
-        .button__wrapper{
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            z-index: 11111
-        }
-        `
-    ],
-    templateUrl: './micro-client-connect-wrapper.component.html'
+    templateUrl: './micro-client-connect-wrapper.component.html',
+    styleUrls: ['./micro-client-connect-wrapper.component.scss']
 })
 export class MicroClientConnectWrapperComponent {
+
+    public expandedView = false;
+
+    public toggleWidget() {
+        this.expandedView = !this.expandedView;
+    }
 
 }

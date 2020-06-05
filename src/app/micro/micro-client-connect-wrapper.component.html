@@ -1,4 +1,8 @@
-<div class="btn-group button__wrapper" role="group" aria-label="Basic example">
+<button class="pointer__wrapper bottom--transition" [ngClass]="{'pointer__wrapper-hidden': !expandedView}" (click)="toggleWidget()">
+    <span class="pointer__item" [ngClass]="{'pointer__item-toggle': expandedView}">
+    </span>
+</button>
+<div class="btn-group button__wrapper bottom--transition" [ngClass]="{'button__wrapper-hidden': !expandedView}" role="group" aria-label="Basic example">
     <button type="button" class="btn btn-dark">
         <svg class="bi bi-chat-square-dots-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
