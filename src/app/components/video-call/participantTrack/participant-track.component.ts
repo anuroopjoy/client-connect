@@ -1,5 +1,5 @@
 // tslint:disable: no-any
-import { Component, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { Participant, TrackPublication } from 'twilio-video';
 
 @Component({
@@ -10,6 +10,7 @@ import { Participant, TrackPublication } from 'twilio-video';
 export class ParticipantTrackComponent implements AfterViewInit {
     @Input() public participant: Participant;
     @Input() public isLocal: boolean;
+    @Output() public selected = new EventEmitter<Participant>();
     @ViewChild('vid') public vid: ElementRef;
 
     public style: any;
@@ -27,6 +28,13 @@ export class ParticipantTrackComponent implements AfterViewInit {
         this.participant.on('trackPublished', publicationAdded);
         this.participant.on('trackUnpublished', publicationRemoved);
         this.getTracks(publications);
+        if (this.isLocal) {
+            this.selected.emit(this.participant);
+        }
+    }
+
+    public select() {
+        this.selected.emit(this.participant);
     }
 
     private getTracks(publications: TrackPublication[]) {

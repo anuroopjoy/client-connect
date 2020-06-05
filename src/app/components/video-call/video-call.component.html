@@ -15,21 +15,22 @@
                 <aside class="jss1547">
                     <div>
                         <div class="jss1550" *ngFor="let participant of participants">
-                            <app-participant-track [participant]="participant" [isLocal]="participant ===  twilioRoom.localParticipant"></app-participant-track>
+                            <app-participant-track [participant]="participant" (selected)="setMainView($event)"
+                             [isLocal]="participant ===  twilioRoom.localParticipant"></app-participant-track>
                         </div>
                     </div>
                 </aside>
-                <div data-cy-main-participant="true" class="jss1824">
+                <div class="jss1824">
                     <div class="jss1827">
                         <h4 class="jss1826">
-                            anuroop
+                            {{selectedParticipant.identity}}
                         </h4>
                     </div>
-                    <video class="vid-holder" style="transform: rotateY(180deg);"></video>
+                    <video class="vid-holder" #vid [ngStyle]="style"></video>
                 </div>
             </div>
         </ng-container>
-        <div class="control-container" [ngClass]="{'showControls': roomState === 'disconnected'}">
+        <div class="control-container">
             <button class="MuiButtonBase-root MuiFab-root" [disabled]="roomState === 'reconnecting'" [attr.title]="isAudioEnabled ? 'Mute Audio' : 'Unmute Audio'"
             (click)="toggleAudio()">
                 <span class="fab">

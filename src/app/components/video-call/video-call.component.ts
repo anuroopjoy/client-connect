@@ -1,7 +1,7 @@
 // tslint:disable: no-any
 import { Component, AfterViewInit, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant, RemoteParticipant } from 'twilio-video';
+import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant, RemoteParticipant, TrackPublication } from 'twilio-video';
 import EventEmitter from 'events';
 
 import { initialSettings } from './constants/settings.constants';
@@ -27,15 +27,22 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public stopScreenShareRef: () => void;
     public participants: Participant[];
     public twilioRoom: Video.Room;
+    public style: any;
+    public selectedParticipant: Participant;
 
     private name = 'anuroop'; // TO DO take user name
     private room = 'bwo';
     private passCode = '6497297644';
+    private token: string;
+    private localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[];
     private getLocalVideoTrack: ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
 
     constructor(private http: HttpClient) { }
-    public ngOnInit() {
-        this.initializeDevices();
+    public async ngOnInit() {
+        const { token, localTracks } = await this.initializeDevices();
+        this.token = token;
+        this.localTracks = localTracks;
+        this.connectToRoom(token, localTracks);
     }
 
     public ngAfterViewInit(): void {
@@ -52,31 +59,48 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     public endCall() {
         this.twilioRoom.disconnect();
     }
-    private async initializeDevices() {
-        const result = await useLocalTracks();
-        let { localTracks } = result;
-        const { getLocalVideoTrack } = result;
-        const handleStopped = () => {
-            localTracks = localTracks.filter(track => !track.isStopped);
+
+    public setMainView(participant: Participant) {
+        this.selectedParticipant = participant;
+        this.twilioRoom.on('disconnected', async () => {
+            this.selectedParticipant = null;
+            this.twilioRoom = null;
+            this.toggleVideo();
+            const { token, localTracks } = await this.initializeDevices();
+            this.token = token;
+            this.localTracks = localTracks;
+        });
+        this.getPublications(participant);
+    }
+    private async initializeDevices(): Promise<any> {
+        return new Promise(async (resolve) => {
+            const result = await useLocalTracks();
+            let { localTracks } = result;
+            const { getLocalVideoTrack } = result;
+            const handleStopped = () => {
+                localTracks = localTracks.filter(track => !track.isStopped);
+                this.getAudioTrack(localTracks);
+                this.getVideoTrack(localTracks);
+            };
+            for (const track of localTracks) {
+                track.on('stopped', handleStopped);
+            }
+            // tslint:disable-next-line: max-line-length
+            this.getLocalVideoTrack = getLocalVideoTrack as ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
+            const { token }: any = await this.http.post('/token',
+                { user_identity: this.name, room_name: this.room, passcode: this.passCode }).toPromise();
+            const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+            const el = this.vid.nativeElement;
+            el.muted = true;
+            videoTrack.attach(el);
+            // The local video track is mirrored.
+            const isFrontFacing = videoTrack.mediaStreamTrack.getSettings().facingMode !== 'environment';
+            this.videoStyle = isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
             this.getAudioTrack(localTracks);
             this.getVideoTrack(localTracks);
-        };
-        for (const track of localTracks) {
-            track.on('stopped', handleStopped);
-        }
-        this.getLocalVideoTrack = getLocalVideoTrack as ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
-        const { token }: any = await this.http.post('/token',
-            { user_identity: this.name, room_name: this.room, passcode: this.passCode }).toPromise();
-        const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
-        const el = this.vid.nativeElement;
-        el.muted = true;
-        videoTrack.attach(el);
-        // The local video track is mirrored.
-        const isFrontFacing = videoTrack.mediaStreamTrack.getSettings().facingMode !== 'environment';
-        this.videoStyle = isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
-        this.getAudioTrack(localTracks);
-        this.getVideoTrack(localTracks);
-        this.connectToRoom(token, localTracks);
+            resolve({ token, localTracks });
+        });
+
     }
 
     private async connectToRoom(token: string, localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[]) {
@@ -200,4 +224,37 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         this.twilioRoom.on('participantConnected', participantConnected);
         this.twilioRoom.on('participantDisconnected', participantDisconnected);
     }
+
+    private getPublications(participant: Participant) {
+        let publications = Array.from(participant.tracks.values()) as TrackPublication[];
+        const publicationAdded = (publication: TrackPublication) => {
+            publications = [...publications, publication];
+            this.getTracks(publications, participant);
+        };
+        const publicationRemoved = (publication: TrackPublication) => {
+            publications = publications.filter(p => p !== publication);
+            this.getTracks(publications, participant);
+        };
+        participant.on('trackPublished', publicationAdded);
+        participant.on('trackUnpublished', publicationRemoved);
+        this.getTracks(publications, participant);
+    }
+    private getTracks(publications: TrackPublication[], participant: Participant) {
+        // tslint:disable-next-line: no-any
+        const videoPublication: any = publications.find((track: any) => track.kind === 'video' && track.trackName.includes('camera'));
+        if (!videoPublication) { return; }
+        const callback = (track: any) => {
+            if (!track) { return; }
+            const isFrontFacing = track.mediaStreamTrack.getSettings().facingMode !== 'environment';
+            const isLocal = participant === this.twilioRoom.localParticipant && track.name.includes('camera');
+            this.style = isLocal && isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
+            const el = this.vid.nativeElement;
+            el.muted = true;
+            track.attach(el);
+        };
+        videoPublication.on('subscribed', callback);
+        videoPublication.on('unsubscribed', () => { });
+        callback(videoPublication.track);
+    }
+
 }
