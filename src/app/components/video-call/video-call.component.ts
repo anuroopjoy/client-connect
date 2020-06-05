@@ -73,6 +73,10 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         });
         this.getPublications(participant);
     }
+
+    public joinRoom() {
+        this.connectToRoom(this.token, this.localTracks);
+    }
     private async initializeDevices(): Promise<any> {
         return new Promise(async (resolve) => {
             const result = await useLocalTracks();
