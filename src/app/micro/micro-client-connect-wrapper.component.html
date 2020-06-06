@@ -14,14 +14,14 @@
                         d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm5 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
                 </svg>
             </div>
-            <span class="badge" *ngIf="liveIndicator && app !== 'Chat'">&nbsp;</span>
+            <span class="badge" *ngIf="liveChatIndicator && app !== 'Chat'">&nbsp;</span>
         </a>
     </button>
     <button type="button" class="btn btn-dark" (click)="selectApp('Email')" [ngClass]="{'active': app === 'Email'}">
         <i class="fa fa-envelope" aria-hidden="true"></i>
     </button>
     <button type="button" class="btn btn-dark" (click)="selectApp('Voice')" [ngClass]="{'active': app === 'Voice'}">
-        <i class="fa fa-phone" [ngClass]="{'video--call-active': liveIndicator && app !== 'Voice'}"
+        <i class="fa fa-phone" [ngClass]="{'video--call-active': liveVoiceIndicator && app !== 'Voice'}"
             aria-hidden="true"></i>
     </button>
     <button type="button" class="btn btn-dark" (click)="selectApp('Video')" [ngClass]="{'active': app === 'Video'}">
@@ -37,13 +37,13 @@
 
 <div class="app--overlay" *ngIf="app !== ''">
     <ng-container>
-        <app-chat [hidden]="app !== 'Chat'" (chatReceived)="showIndicator()"></app-chat>
+        <app-chat [hidden]="app !== 'Chat'" (chatReceived)="showIndicator('Chat')"></app-chat>
     </ng-container>
     <ng-container *ngIf="app === 'Email'">
         <app-email></app-email>
     </ng-container>
     <ng-container>
-        <app-voice-call [hidden]="app !== 'Voice'" (callReceived)="showIndicator()"></app-voice-call>
+        <app-voice-call [hidden]="app !== 'Voice'" (callReceived)="showIndicator('Voice')"></app-voice-call>
     </ng-container>
     <ng-container *ngIf="app === 'Video'">
         <app-video-call></app-video-call>
