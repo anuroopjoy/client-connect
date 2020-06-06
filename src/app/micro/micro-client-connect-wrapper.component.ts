@@ -23,6 +23,8 @@ export class MicroClientConnectWrapperComponent {
     }
     public expandedView = false;
     public app = '';
+    public liveChatIndicator = false;
+    public liveVoiceIndicator = false;
 
     private pUser: string;
 
@@ -38,6 +40,23 @@ export class MicroClientConnectWrapperComponent {
             this.app = '';
         } else {
             this.app = app;
+            if (this.app === 'Chat') {
+                this.liveChatIndicator = false;
+            } else if (this.app === 'Voice') {
+                this.liveVoiceIndicator = false;
+            }
+        }
+    }
+
+    public showIndicator(app: string) {
+        if (app === 'Chat') {
+            this.liveChatIndicator = true;
+        } else if (app === 'Voice') {
+            this.liveVoiceIndicator = true;
+        }
+        if (!this.expandedView) {
+            this.expandedView = (this.liveChatIndicator || this.liveVoiceIndicator)
+                && !(['Chat', 'Voice'].includes(this.app));
         }
     }
 

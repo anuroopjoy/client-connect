@@ -1,6 +1,6 @@
 // tslint:disable: no-any
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { each, find, isEmpty, size, first, last } from 'lodash-es';
 
 import { CONNECTION_STATUS, API_URLS, DEFAULT_CHANNEL, IConnectionState, MAX_MSG_LINE_LENGTH, MSG_STYLE_COL_START } from './chat-helper';
@@ -13,7 +13,7 @@ const Client = require('twilio-chat').Client;
     styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent {
-
+    @Output() public chatReceived = new EventEmitter();
     public activeChannel: any;
     public activeChannelMessages: any[];
     public channels: { [key: string]: any } = {
@@ -195,10 +195,12 @@ export class ChatComponent {
                 author, body, dateUpdated, index,
                 cssClass: getClassName(body.length)
             });
+            this.chatReceived.emit();
             this.messageToSend = '';
             this.scrollToLastMessage();
         });
         this.activeChannel.on('messageUpdated', ({ message }: any) => {
+            this.chatReceived.emit();
             let messageToUpdate = find(this.activeChannelMessages, { index: message.index });
             if (messageToUpdate) { messageToUpdate = { ...message }; }
         });

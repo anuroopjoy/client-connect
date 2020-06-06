@@ -9,6 +9,7 @@
     <main style="overflow: hidden;">
         <ng-container *ngIf="roomState === 'disconnected'">
             <video #vid class="vid-holder" [ngStyle]="videoStyle" [hidden]="!initialLoad"></video>
+            <div class="loader" *ngIf="!initialLoad"></div>
         </ng-container>
         <ng-container *ngIf="roomState !== 'disconnected'">
             <div class="jss1545">
