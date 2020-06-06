@@ -5,15 +5,32 @@
     src="https://video-app-7644-dev.twil.io?passcode=6497297644"
 ></iframe> -->
 
-<div class="vid-container" [ngStyle]="{height: innerHeight}">
+<div class="vid-container">
     <main style="overflow: hidden;">
         <ng-container *ngIf="roomState === 'disconnected'">
-            <video #vid class="vid-holder" [ngStyle]="videoStyle"></video>
+            <video #vid class="vid-holder" [ngStyle]="videoStyle" [hidden]="!initialLoad"></video>
         </ng-container>
         <ng-container *ngIf="roomState !== 'disconnected'">
-
+            <div class="jss1545">
+                <aside class="jss1547">
+                    <div>
+                        <div class="jss1550" *ngFor="let participant of participants">
+                            <app-participant-track [participant]="participant" (selected)="setMainView($event)"
+                             [isLocal]="participant ===  twilioRoom.localParticipant"></app-participant-track>
+                        </div>
+                    </div>
+                </aside>
+                <div class="jss1824">
+                    <div class="jss1827">
+                        <h4 class="jss1826">
+                            {{selectedParticipant.identity}}
+                        </h4>
+                    </div>
+                    <video class="vid-holder" #vid [ngStyle]="style"></video>
+                </div>
+            </div>
         </ng-container>
-        <div class="control-container" [ngClass]="{'showControls': roomState === 'disconnected'}">
+        <div class="control-container">
             <button class="MuiButtonBase-root MuiFab-root" [disabled]="roomState === 'reconnecting'" [attr.title]="isAudioEnabled ? 'Mute Audio' : 'Unmute Audio'"
             (click)="toggleAudio()">
                 <span class="fab">
@@ -40,7 +57,7 @@
             </button>
             <ng-container *ngIf="roomState !== 'disconnected'">
                 <div style="cursor: pointer;" title="Share Screen">
-                    <button class="MuiButtonBase-root MuiFab-root" type="button" [disabled]="roomState === 'reconnecting'" [attr.title]="isScreenShared ? 'Stop Sharing Screen' : 'Share Screen'"
+                    <button class="MuiButtonBase-root MuiFab-root" [ngClass]="{'Mui-disabled': roomState === 'reconnecting' || sharingInProgress }"type="button" [disabled]="roomState === 'reconnecting' || sharingInProgress" [attr.title]="isScreenShared ? 'Stop Sharing Screen' : 'Share Screen'"
                     (click)="toggleSharing()">
                         <span class="fab">
                             <ng-container *ngIf="!isScreenShared">
@@ -55,6 +72,26 @@
                 </div>
                 <button class="MuiButtonBase-root MuiFab-root jss1225 MuiFab-primary" type="button" title="End Call"
                 (click)="endCall()">
+                    <span class="fab">
+                        <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" role="presentation"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"></path></svg>
+                    </span>
+                    <span class="MuiTouchRipple-root"></span>
+                </button>
+                <button class="MuiButtonBase-root MuiFab-root" tabindex="0" type="button" (click)="toggleFullScreen()">
+                    <span class="MuiIconButton-label">
+                        <ng-container *ngIf="!isFullScreen">
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" role="presentation"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"></path></svg>
+                        </ng-container>
+                        <ng-container *ngIf="isFullScreen">
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" role="presentation"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"></path></svg>
+                        </ng-container>
+                    </span>
+                    <span class="MuiTouchRipple-root"></span>
+                </button>
+                </ng-container>
+            <ng-container *ngIf="roomState === 'disconnected'">
+                <button class="MuiButtonBase-root MuiFab-root jss1225 MuiFab-primary" style="transform: rotateY(0deg) rotate(225deg);" type="button" title="Join Call"
+                (click)="joinRoom()">
                     <span class="fab">
                         <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" role="presentation"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"></path></svg>
                     </span>
