@@ -103,8 +103,7 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
             }
             // tslint:disable-next-line: max-line-length
             this.getLocalVideoTrack = getLocalVideoTrack as ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
-            const { token }: any = await this.http.post('/token',
-                { user_identity: this.name, room_name: this.room, passcode: this.passCode }).toPromise();
+            const { token }: any = await this.http.get(`/VideoCallToken/Generate?identity=${this.name}&room=${this.room}`).toPromise();
             const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
             const el = this.vid.nativeElement;
             el.muted = true;
