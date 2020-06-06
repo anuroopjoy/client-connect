@@ -1,6 +1,6 @@
 // tslint:disable: no-any
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
-import { Participant, TrackPublication } from 'twilio-video';
+import { Participant, TrackPublication, VideoTrackPublication, AudioTrackPublication } from 'twilio-video';
 
 @Component({
     selector: 'app-participant-track',
@@ -20,14 +20,17 @@ export class ParticipantTrackComponent implements AfterViewInit {
         const publicationAdded = (publication: TrackPublication) => {
             publications = [...publications, publication];
             this.getTracks(publications);
+            this.createAudio(publications);
         };
         const publicationRemoved = (publication: TrackPublication) => {
             publications = publications.filter(p => p !== publication);
             this.getTracks(publications);
+            this.createAudio(publications);
         };
         this.participant.on('trackPublished', publicationAdded);
         this.participant.on('trackUnpublished', publicationRemoved);
         this.getTracks(publications);
+        this.createAudio(publications);
         if (this.isLocal) {
             this.selected.emit(this.participant);
         }
@@ -38,8 +41,8 @@ export class ParticipantTrackComponent implements AfterViewInit {
     }
 
     private getTracks(publications: TrackPublication[]) {
-        // tslint:disable-next-line: no-any
-        const videoPublication: any = publications.find((track: any) => track.kind === 'video' && track.trackName.includes('camera'));
+        const videoPublication =
+            publications.find((track: any) => track.kind === 'video' && track.trackName.includes('camera')) as VideoTrackPublication;
         if (!videoPublication) { return; }
         const callback = (track: any) => {
             if (!track) { return; }
@@ -55,4 +58,18 @@ export class ParticipantTrackComponent implements AfterViewInit {
         callback(videoPublication.track);
     }
 
+    private createAudio(publications: TrackPublication[]) {
+        const audioPublication =
+            publications.find((track: any) => track.kind === 'audio') as AudioTrackPublication;
+        if (!audioPublication) { return; }
+        const callback = (track: any) => {
+            if (!track) { return; }
+            const audioEl = track.attach();
+            audioEl.setAttribute('data-cy-audio-track-name', track.name);
+            document.body.appendChild(audioEl);
+        };
+        audioPublication.on('subscribed', callback);
+        audioPublication.on('unsubscribed', () => { });
+        callback(audioPublication.track);
+    }
 }
