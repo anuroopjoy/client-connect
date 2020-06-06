@@ -192,11 +192,22 @@
     font-style: italic;
 }
 
+.chat-box {
+    margin-left: 22px;
+}
+
+.channel-name {
+    margin-left: 30px;
+    padding: 10px;
+    background-color: rgb(235, 232, 232);
+    border-radius: 10px;
+}
+
 .msg {
     div {
         font-size: 0.85em;
         padding: 8px;
-        border-radius: 20px;
+        border-radius: 0.75em;
     }
 }
 
@@ -204,7 +215,7 @@
     text-align: right;
     justify-content: flex-end;
     div {
-        background-color: rgb(192, 218, 253);
+        background-color: rgb(208, 226, 250);
     }
 }
 
@@ -212,13 +223,14 @@
     text-align: left;
     justify-content: flex-start;
     div {
-        background-color: rgb(215, 199, 253);
+        background-color: rgb(224, 212, 252);
     }
 }
 
 .channel-messages {
     margin: 8px 0px 8px 8px;
-    max-height: 400px;
+    max-height: 50%;
+    max-height: 50vh;
     overflow-y: auto;
 }
 
@@ -244,6 +256,7 @@
     display: inline-block;
     font-weight: bold;
     margin: 0;
+    margin-left: 10px;
     padding: 0;
     width: calc(100% - 90px);
 }

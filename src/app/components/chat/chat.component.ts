@@ -172,23 +172,29 @@ export class ChatComponent {
     }
 
     private setActiveChannel() {
+
+        const getClassName = (len: number) => {
+            return 'col-sm-' + (Math.round(len / MAX_MSG_LINE_LENGTH) + MSG_STYLE_COL_START);
+        };
+
         this.activeChannel.getMessages(30)
             .then((page: any) => {
                 this.activeChannelMessages = page.items
                     .map((item: { author: any; body: any; index: any; dateUpdated: any; }) => {
                         const { author, body, index, dateUpdated } = item;
                         return {
-                            author,
-                            body,
-                            dateUpdated,
-                            index,
-                            cssClass: 'col-md-' + (Math.round(body.length / MAX_MSG_LINE_LENGTH) + MSG_STYLE_COL_START)
+                            author, body, dateUpdated, index,
+                            cssClass: getClassName(body.length)
                         };
                     });
                 this.scrollToLastMessage();
             });
         this.activeChannel.on('messageAdded', (message: any) => {
-            this.activeChannelMessages.push(message);
+            const { author, body, index, dateUpdated } = message;
+            this.activeChannelMessages.push({
+                author, body, dateUpdated, index,
+                cssClass: getClassName(body.length)
+            });
             this.messageToSend = '';
             this.scrollToLastMessage();
         });

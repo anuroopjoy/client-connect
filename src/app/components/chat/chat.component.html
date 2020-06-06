@@ -1,6 +1,6 @@
 <div class="container">
-    <div class="row col-md-8">
-        <div class="col-md-2 led-box">
+    <div class="row col-sm-8">
+        <div class="col-sm-2 led-box">
             <div
                 [ngClass]="{
                     'led-green': connectionState.connected,
@@ -10,7 +10,7 @@
                 }"
             ></div>
         </div>
-        <div class="col-md-6">
+        <div class="col-sm-8">
             <h2>
                 {{
                     connectionState.connected
@@ -21,11 +21,11 @@
         </div>
     </div>
     <div *ngIf="!connectionState.connected" class="row">
-        <div class="col-md-6">
+        <div class="col-sm-12">
             <h4>{{ status }}</h4>
         </div>
-        <div class="row col-md-12">
-            <div class="col-md-4">
+        <div class="row col-sm-12">
+            <div class="col-sm-4">
                 <input
                     name="userName"
                     class="form-control"
@@ -34,7 +34,7 @@
                     [(ngModel)]="userName"
                 />
             </div>
-            <div class="col-md-2">
+            <div class="col-sm-2">
                 <button
                     class="btn btn-md btn-primary"
                     [disabled]="!userName"
@@ -46,17 +46,19 @@
         </div>
     </div>
     <div *ngIf="connectionState.connected" class="row">
-        <div class="col-md-12">
-            <h4>
-                {{
-                    activeChannel?.friendlyName +
-                        " : " +
-                        activeChannel?.attributes.description
-                }}
-            </h4>
+        <div class="col-sm-8">
+            <div class="channel-name">
+                <h5>
+                    {{
+                        activeChannel?.friendlyName +
+                            " : " +
+                            activeChannel?.attributes.description
+                    }}
+                </h5>
+            </div>
         </div>
-        <div id="channel" class="col-md-12">
-            <div #messagePanel class="col-md-6 channel-messages">
+        <div id="channel" class="col-sm-12">
+            <div #messagePanel class="col-sm-8 channel-messages">
                 <ul
                     *ngFor="let message of activeChannelMessages; let i = index"
                 >
@@ -73,11 +75,29 @@
                     >
                         <div [class]="message.cssClass">
                             <img
-                                *ngIf="message?.author !== userName"
+                                *ngIf="
+                                    message?.author !== userName &&
+                                    (i === 0 ||
+                                        message?.author !==
+                                            activeChannelMessages[i - 1].author)
+                                "
                                 src="../../../assets/images/icons8-user-male-26.png"
+                                width="15"
+                                height="15"
                             />
-                            <p class="author">
-                                {{ message?.author }}
+                            <p
+                                *ngIf="
+                                    i === 0 ||
+                                    message?.author !==
+                                        activeChannelMessages[i - 1].author
+                                "
+                                class="author"
+                            >
+                                {{
+                                    message?.author === userName
+                                        ? "You"
+                                        : message?.author
+                                }}
                                 <span class="timestamp">
                                     {{
                                         message?.dateUpdated | date: "shortTime"
@@ -90,19 +110,19 @@
                 </ul>
             </div>
         </div>
-        <div id="chat-text-box" class="col-md-12">
+        <div class="col-sm-12 chat-box">
             <div class="row">
                 <span class="typing-indicator">
                     {{ typingMsg }}
                 </span>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-sm-8">
                     <input
                         type="text"
                         id="message-body-input"
                         class="form-control"
-                        placeholder="Type a new message"
+                        placeholder="Press 'Enter' key to send your messages."
                         [(ngModel)]="messageToSend"
                         (keydown.enter)="sendMessage()"
                         (keydown)="activeChannel.typing()"
