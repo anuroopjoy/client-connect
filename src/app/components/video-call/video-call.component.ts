@@ -1,5 +1,5 @@
 // tslint:disable: no-any
-import { Component, AfterViewInit, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant, RemoteParticipant, TrackPublication } from 'twilio-video';
 import EventEmitter from 'events';
@@ -16,7 +16,7 @@ import { ClientService } from 'src/app/stand-alone/client-details.service';
     templateUrl: './video-call.component.html',
     styleUrls: ['./video-call.component.scss']
 })
-export class VideoCallComponent implements OnInit, AfterViewInit {
+export class VideoCallComponent implements OnInit, AfterViewInit, OnDestroy {
     public innerHeight: number;
     public roomState = 'disconnected';
     public videoStyle: any;
@@ -51,6 +51,13 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         const onFullScreenChange = () => { this.isFullScreen = !!fscreen.fullscreenElement; };
         fscreen.addEventListener('fullscreenchange', onFullScreenChange);
         this.connectToRoom(token, localTracks);
+    }
+
+    public ngOnDestroy(): void {
+        const videoTrack = this.localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+        videoTrack.stop();
+        const audioTrack = this.localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+        audioTrack.disable();
     }
 
     public ngAfterViewInit(): void {
