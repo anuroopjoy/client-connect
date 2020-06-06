@@ -61,22 +61,31 @@
                     *ngFor="let message of activeChannelMessages; let i = index"
                 >
                     <li
+                        class="msg"
+                        [ngClass]="{
+                            'msg-sent': message?.author === userName,
+                            'msg-recieved': message?.author !== userName
+                        }"
                         [ngStyle]="{
                             'text-align':
                                 message?.author === userName ? 'right' : 'left'
                         }"
                     >
-                        <img
-                            *ngIf="message?.author !== userName"
-                            src="../../../assets/images/icons8-user-male-26.png"
-                        />
-                        <p class="author">
-                            {{ message?.author }}
-                            <span class="timestamp">
-                                {{ message?.dateUpdated | date: "shortTime" }}
-                            </span>
-                        </p>
-                        <p class="body">{{ message?.body }}</p>
+                        <div [class]="message.cssClass">
+                            <img
+                                *ngIf="message?.author !== userName"
+                                src="../../../assets/images/icons8-user-male-26.png"
+                            />
+                            <p class="author">
+                                {{ message?.author }}
+                                <span class="timestamp">
+                                    {{
+                                        message?.dateUpdated | date: "shortTime"
+                                    }}
+                                </span>
+                            </p>
+                            <p class="body">{{ message?.body }}</p>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -98,19 +107,6 @@
                         (keydown.enter)="sendMessage()"
                         (keydown)="activeChannel.typing()"
                     />
-                </div>
-                <div class="col-md-2">
-                    <button
-                        id="send-message"
-                        class="btn-transparent"
-                        (click)="sendMessage()"
-                    >
-                        <img
-                            src="../../../assets/images/icons8-forward-100.png"
-                            width="30"
-                            height="30"
-                        />
-                    </button>
                 </div>
             </div>
         </div>

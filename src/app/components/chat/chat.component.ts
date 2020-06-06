@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { each, find, isEmpty, size, first, last } from 'lodash-es';
 
-import { CONNECTION_STATUS, API_URLS, DEFAULT_CHANNEL, IConnectionState } from './chat-helper';
+import { CONNECTION_STATUS, API_URLS, DEFAULT_CHANNEL, IConnectionState, MAX_MSG_LINE_LENGTH, MSG_STYLE_COL_START } from './chat-helper';
 
 const Client = require('twilio-chat').Client;
 
@@ -174,7 +174,17 @@ export class ChatComponent {
     private setActiveChannel() {
         this.activeChannel.getMessages(30)
             .then((page: any) => {
-                this.activeChannelMessages = page.items;
+                this.activeChannelMessages = page.items
+                    .map((item: { author: any; body: any; index: any; dateUpdated: any; }) => {
+                        const { author, body, index, dateUpdated } = item;
+                        return {
+                            author,
+                            body,
+                            dateUpdated,
+                            index,
+                            cssClass: 'col-md-' + (Math.round(body.length / MAX_MSG_LINE_LENGTH) + MSG_STYLE_COL_START)
+                        };
+                    });
                 this.scrollToLastMessage();
             });
         this.activeChannel.on('messageAdded', (message: any) => {

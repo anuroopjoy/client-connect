@@ -192,6 +192,30 @@
     font-style: italic;
 }
 
+.msg {
+    div {
+        font-size: 0.85em;
+        padding: 8px;
+        border-radius: 20px;
+    }
+}
+
+.msg-sent {
+    text-align: right;
+    justify-content: flex-end;
+    div {
+        background-color: rgb(192, 218, 253);
+    }
+}
+
+.msg-recieved {
+    text-align: left;
+    justify-content: flex-start;
+    div {
+        background-color: rgb(215, 199, 253);
+    }
+}
+
 .channel-messages {
     margin: 8px 0px 8px 8px;
     max-height: 400px;
@@ -205,7 +229,8 @@
 }
 
 .channel-messages li {
-    padding: 10px;
+    display: flex;
+    padding: 2px;
     position: relative;
 }
 
@@ -227,13 +252,4 @@
     margin: 0 0 0 35px;
     padding: 0;
     width: calc(100% - 90px);
-}
-
-.btn-transparent {
-    background: transparent;
-    border: none;
-    outline: none;
-    img {
-        cursor: pointer;
-    }
 }
