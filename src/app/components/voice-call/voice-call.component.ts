@@ -1,5 +1,5 @@
 // tslint:disable: no-any
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ClientService } from 'src/app/stand-alone/client-details.service';
 
@@ -11,6 +11,7 @@ const Device = require('twilio-client').Device;
     styleUrls: ['./voice-call.component.scss']
 })
 export class VoiceCallComponent implements OnInit {
+    @Output() public callReceived = new EventEmitter();
     // mode = 'TaxPro'/'Customer'
     public mode: string;
     public status = 'Connecting to Twilio...';
@@ -84,6 +85,7 @@ export class VoiceCallComponent implements OnInit {
             });
             // // Set a callback on the answer button and enable it
             this.incomingCall = true;
+            this.callReceived.emit();
             this.answerCallback = () => {
                 connection.accept();
             };

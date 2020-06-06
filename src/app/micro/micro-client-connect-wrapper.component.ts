@@ -23,6 +23,7 @@ export class MicroClientConnectWrapperComponent {
     }
     public expandedView = false;
     public app = '';
+    public liveIndicator = false;
 
     private pUser: string;
 
@@ -38,7 +39,12 @@ export class MicroClientConnectWrapperComponent {
             this.app = '';
         } else {
             this.app = app;
+            this.liveIndicator = false;
         }
+    }
+
+    public showIndicator() {
+        this.liveIndicator = true;
     }
 
 }
