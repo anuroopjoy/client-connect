@@ -45,6 +45,9 @@ export class MicroClientConnectWrapperComponent {
 
     public showIndicator() {
         this.liveIndicator = true;
+        if (!this.expandedView) {
+            this.expandedView = this.liveIndicator && !(['Chat', 'Voice'].includes(this.app));
+        }
     }
 
 }
