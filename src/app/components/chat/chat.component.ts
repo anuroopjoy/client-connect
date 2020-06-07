@@ -150,8 +150,10 @@ export class ChatComponent implements OnInit {
                         .then((pChannel: { join: () => Promise<any>; }) => {
                             pChannel.join()
                                 .then(qChannel => {
-                                    this.activeChannel = qChannel;
-                                    this.setActiveChannel();
+                                    if (qChannel.friendlyName === DEFAULT_CHANNEL.name) {
+                                        this.activeChannel = qChannel;
+                                        this.setActiveChannel();
+                                    }
                                 })
                                 .catch((error: any) => {
                                     console.error('ERROR! : Unable to join public channel.', { error });
@@ -216,7 +218,7 @@ export class ChatComponent implements OnInit {
     private setActiveChannel() {
 
         const getClassName = (len: number) => {
-            return 'col-sm-' + (Math.round(len / MAX_MSG_LINE_LENGTH) + MSG_STYLE_COL_START);
+            return 'col-sm-' + (Math.ceil(len / MAX_MSG_LINE_LENGTH) + MSG_STYLE_COL_START);
         };
 
         this.activeChannel.getMessages(30)

@@ -10,8 +10,8 @@ export const API_URLS = {
 };
 
 export const DEFAULT_CHANNEL = {
-    name: 'CLIENT-CONNECT-TEST-CHANNEL',
-    uniqueName: 'CCD-TEST-CHANNEL',
+    name: 'CLIENT-CONNECT-TEST-CHANNEL2',
+    uniqueName: 'CCD-TEST-CHANNEL2',
     description: 'Client Connect Test Channel'
 };
 

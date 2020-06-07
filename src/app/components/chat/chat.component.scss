@@ -224,6 +224,16 @@
     }
 }
 
+.no-conversation {
+    position: absolute;
+    text-align: center;
+    background-color: aliceblue;
+    padding: 10px;
+    border-radius: 10px;
+    left: 22%;
+    top: 35%;
+}
+
 .loader {
     position: absolute;
     border: 6px solid #f3f3f3;

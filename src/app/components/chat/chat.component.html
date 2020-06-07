@@ -40,6 +40,15 @@
         <div id="channel" class="col-sm-12">
             <div #messagePanel class="col-sm-6 channel-messages">
                 <div *ngIf="!isReady" class="loader"></div>
+                <div
+                    *ngIf="isReady && !activeChannelMessages?.length"
+                    class="no-conversation"
+                >
+                    <h4>
+                        You're starting a new conversation
+                    </h4>
+                    <h5>Type your first message below.</h5>
+                </div>
                 <ul
                     *ngFor="let message of activeChannelMessages; let i = index"
                 >
