@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { ClientService } from '../stand-alone/client-details.service';
+import { ClientService } from '../services/client-details.service';
 
 /**
  * Micro TaxFlow Wrapper Component

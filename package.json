@@ -16,9 +16,10 @@
         "e2e": "ng e2e",
         "micro-build": "ng build --project micro-client-connect --prod --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect",
         "micro-build:dev": "ng build --project micro-client-connect --aot --source-map true --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect",
-        "micro-build:prod": "npm run micro-build",
         "copy:all": "xcopy /d /y /i /s dist\\micro-client-connect\\* .\\host-app\\micro\\micro-client-connect\\*",
-        "micro": "npm run micro-build:dev && npm run copy:all",
+        "copy:assets": "xcopy /d /y /i /s dist\\micro-client-connect\\assets\\* .\\host-app\\assets\\*",
+        "micro:prod": "npm run micro-build && npm run copy:all && npm run copy:assets",
+        "micro": "npm run micro-build:dev && npm run copy:all && npm run copy:assets",
         "documentation:lib": "npx compodoc -c ./projects/hrblock-ocap-header/.compodocrc.json",
         "documentation": "npm run documentation:lib && npx compodoc -c ./.compodocrc.json",
         "bundle-analyzer": "webpack-bundle-analyzer dist/app-client-connect/stats.json"

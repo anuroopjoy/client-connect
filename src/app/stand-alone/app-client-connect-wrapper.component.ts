@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ClientService } from './client-details.service';
+
+import { ClientService } from '../services/client-details.service';
 
 /**
  * StandAlone TaxFlow WrapperComponent

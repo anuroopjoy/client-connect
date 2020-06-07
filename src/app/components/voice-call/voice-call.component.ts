@@ -1,9 +1,10 @@
 // tslint:disable: no-any
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ClientService } from 'src/app/stand-alone/client-details.service';
-
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 const Device = require('twilio-client').Device;
+
+import { ClientService } from 'src/app/services/client-details.service';
+import { HttpService } from 'src/app/services/http.service';
+import { environment, IApiDefinition } from 'src/environments/environment';
 
 @Component({
     selector: 'app-voice-call',
@@ -20,12 +21,17 @@ export class VoiceCallComponent implements OnInit {
     public customerPhone: string;
     public answerCallback: () => void;
 
-    constructor(private http: HttpClient, private userDetails: ClientService) { }
+    private apiConstants: { getToken?: IApiDefinition };
+
+    constructor(private http: HttpService, private userDetails: ClientService) {
+        this.apiConstants = environment.apiConstants.features.voice;
+    }
 
     public async ngOnInit() {
         this.mode = this.userDetails.getUserDetails().role;
-        const param = this.mode === 'TaxPro' ? '/dashboard' : window.location.pathname;
-        const data: any = await this.http.post('/token/generate', { page: param }).toPromise();
+        const page = this.mode === 'TaxPro' ? '/dashboard' : window.location.pathname;
+        const { method, url } = this.apiConstants.getToken;
+        const data: any = await this.http.request(method, url, { page });
         // Set up the Twilio Client Device with the token
         Device.setup(data.token);
         this.handleCallbacks();

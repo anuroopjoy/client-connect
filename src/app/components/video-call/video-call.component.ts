@@ -1,15 +1,20 @@
 // tslint:disable: no-any
-import { Component, AfterViewInit, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant, RemoteParticipant, TrackPublication } from 'twilio-video';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import Video, {
+    LocalAudioTrack, LocalVideoTrack, Participant, RemoteParticipant, Room, TrackPublication,
+    TwilioError
+} from 'twilio-video';
 import EventEmitter from 'events';
 import fscreen from 'fscreen';
 
+import { ClientService } from 'src/app/services/client-details.service';
+import { HttpService } from 'src/app/services/http.service';
+import { IApiDefinition, environment } from 'src/environments/environment';
+
 import { initialSettings } from './constants/settings.constants';
-import generateConnectionOptions from './helpers/video-settings.helper';
 import useLocalTracks from './helpers/tracks.helper';
+import generateConnectionOptions from './helpers/video-settings.helper';
 import { IMediaStreamTrackPublishOptions } from './interfaces/settings.interface';
-import { ClientService } from 'src/app/stand-alone/client-details.service';
 
 @Component({
     selector: 'app-video-call',
@@ -41,8 +46,11 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
     private token: string;
     private localTracks: (Video.LocalAudioTrack | Video.LocalVideoTrack)[];
     private getLocalVideoTrack: ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
+    private apiConstants: { getToken?: IApiDefinition };
 
-    constructor(private http: HttpClient, private userDetails: ClientService) { }
+    constructor(private http: HttpService, private userDetails: ClientService) {
+        this.apiConstants = environment.apiConstants.features.video;
+    }
     public async ngOnInit() {
         this.name = this.userDetails.getUserDetails().name;
         const { token, localTracks } = await this.initializeDevices();
@@ -103,8 +111,14 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
             }
             // tslint:disable-next-line: max-line-length
             this.getLocalVideoTrack = getLocalVideoTrack as ((newOptions?: Video.CreateLocalTrackOptions) => Promise<Video.LocalVideoTrack>);
-            const { token }: any = await this.http.post('/token',
-                { user_identity: this.name, room_name: this.room, passcode: this.passCode }).toPromise();
+            const { method, url } = this.apiConstants.getToken;
+            let data: any;
+            if (method === 'GET') {
+                data = { identity: this.name, room: this.room, };
+            } else if (method === 'POST') {
+                data = { user_identity: this.name, room_name: this.room, passcode: this.passCode };
+            }
+            const { token }: any = await this.http.request(method, url, data);
             const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
             const el = this.vid.nativeElement;
             el.muted = true;

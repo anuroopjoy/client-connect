@@ -24,29 +24,9 @@
         <div class="col-sm-12">
             <h4>{{ status }}</h4>
         </div>
-        <div class="row col-sm-12">
-            <div class="col-sm-4">
-                <input
-                    name="userName"
-                    class="form-control"
-                    placeholder="Enter your name"
-                    type="text"
-                    [(ngModel)]="userName"
-                />
-            </div>
-            <div class="col-sm-2">
-                <button
-                    class="btn btn-md btn-primary"
-                    [disabled]="!userName"
-                    (click)="connect()"
-                >
-                    CHAT
-                </button>
-            </div>
-        </div>
     </div>
     <div *ngIf="connectionState.connected" class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-6">
             <div class="channel-name">
                 <h5>
                     {{
@@ -58,7 +38,7 @@
             </div>
         </div>
         <div id="channel" class="col-sm-12">
-            <div #messagePanel class="col-sm-8 channel-messages">
+            <div #messagePanel class="col-sm-6 channel-messages">
                 <ul
                     *ngFor="let message of activeChannelMessages; let i = index"
                 >
@@ -117,7 +97,7 @@
                 </span>
             </div>
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-6">
                     <input
                         type="text"
                         id="message-body-input"

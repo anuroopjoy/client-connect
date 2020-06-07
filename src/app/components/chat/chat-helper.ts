@@ -10,9 +10,9 @@ export const API_URLS = {
 };
 
 export const DEFAULT_CHANNEL = {
-    name: 'BWO-CHAT',
-    uniqueName: 'BWO-CHAT',
-    description: 'BWO Chat Application'
+    name: 'CLIENT-CONNECT-TEST-CHANNEL',
+    uniqueName: 'CCD-TEST-CHANNEL',
+    description: 'Client Connect Test Channel'
 };
 
 export interface IConnectionState {

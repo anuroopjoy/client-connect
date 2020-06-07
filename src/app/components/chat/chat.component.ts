@@ -1,19 +1,24 @@
 // tslint:disable: no-any
-import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
-import { each, find, isEmpty, size, first, last } from 'lodash-es';
-
-import { CONNECTION_STATUS, API_URLS, DEFAULT_CHANNEL, IConnectionState, MAX_MSG_LINE_LENGTH, MSG_STYLE_COL_START } from './chat-helper';
-
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { each, find, first, isUndefined, last, size, isEmpty } from 'lodash-es';
 const Client = require('twilio-chat').Client;
+
+import { ClientService } from 'src/app/services/client-details.service';
+import { HttpService } from 'src/app/services/http.service';
+import { environment, IApiDefinition } from 'src/environments/environment';
+
+import {
+    CONNECTION_STATUS, DEFAULT_CHANNEL, IConnectionState, MAX_MSG_LINE_LENGTH, MSG_STYLE_COL_START
+} from './chat-helper';
 
 @Component({
     selector: 'app-chat',
     templateUrl: './chat.component.html',
     styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
     @Output() public chatReceived = new EventEmitter();
+
     public activeChannel: any;
     public activeChannelMessages: any[];
     public channels: { [key: string]: any } = {
@@ -33,20 +38,26 @@ export class ChatComponent {
     public userName = '';
 
     private client: any;
+    private apiConstants: { getToken?: IApiDefinition };
+
     @ViewChild('messagePanel') private messagePanel: ElementRef;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpService, private clientService: ClientService) {
+        this.apiConstants = environment.apiConstants.features.chat;
+    }
 
-    public connect() {
-        if (!isEmpty(this.userName)) {
-            this.initializeChat();
-        } else {
-            console.error('ERROR! : Unable to connect. User name is empty.');
-        }
+    public ngOnInit() {
+        const { name } = this.clientService.getUserDetails();
+        this.connect(name);
+    }
+
+    public connect(name: string) {
+        this.userName = name;
+        this.initializeChat();
     }
 
     public sendMessage() {
-        if (this.activeChannel) {
+        if (this.activeChannel && !isEmpty(this.messageToSend)) {
             this.activeChannel.sendMessage(this.messageToSend)
                 .then(() => {
                     // Your message has been sent.
@@ -61,7 +72,7 @@ export class ChatComponent {
         this.client.createChannel({
             attributes: { description: DEFAULT_CHANNEL.description },
             friendlyName: DEFAULT_CHANNEL.name,
-            isPrivate: true,
+            isPrivate: false,
             uniqueName: DEFAULT_CHANNEL.uniqueName
         })
             .then((channel: any) => {
@@ -80,22 +91,21 @@ export class ChatComponent {
     private initializeChat() {
         try {
             this.status = CONNECTION_STATUS.connecting;
-            this.http.get(
-                API_URLS.getToken, {
-                params: { identity: this.userName, device: 'browser' },
-                responseType: 'text'
-            }).toPromise().then((token: any) => {
-                (Client.create(token, { logLevel: 'info' }) as Promise<any>)
-                    .then((client) => {
-                        this.client = client;
-                        this.status = CONNECTION_STATUS.connected;
-                        this.subscribeToClientEvents();
-                    })
-                    .catch((error) => {
-                        this.status = CONNECTION_STATUS.error;
-                        console.error('ERROR! : Unable to create Twilio client.', { error });
-                    });
-            });
+            const { method, url, responseType } = this.apiConstants.getToken;
+            this.http.request(method, url, { identity: this.userName, device: 'browser' }, responseType)
+                .then((data: any) => {
+                    const token = data.token ? data.token : data;
+                    (Client.create(token, { logLevel: 'info' }) as Promise<any>)
+                        .then((client) => {
+                            this.client = client;
+                            this.status = CONNECTION_STATUS.connected;
+                            this.subscribeToClientEvents();
+                        })
+                        .catch((error) => {
+                            this.status = CONNECTION_STATUS.error;
+                            console.error('ERROR! : Unable to create Twilio client.', { error });
+                        });
+                });
         } catch (error) {
             this.status = CONNECTION_STATUS.error;
             console.error('ERROR! : Unable to fetch the chat service token.', { error });
@@ -127,6 +137,39 @@ export class ChatComponent {
                 this.createChannel();
             }
         };
+
+        const updatePublicChannels = (page: any) => {
+            const publicChannels = page.items
+                .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
+            each(publicChannels, (channel) => {
+                const result = find(subscribedChannels, item => item.sid === channel.sid);
+                console.log('Adding public channel ' + channel.sid + ' ' + channel.status + ', result=' + result);
+                if (isUndefined(result)) {
+                    channel.getChannel()
+                        .then((pChannel: { join: () => Promise<any>; }) => {
+                            pChannel.join()
+                                .then(qChannel => {
+                                    this.activeChannel = qChannel;
+                                    this.setActiveChannel();
+                                })
+                                .catch((error: any) => {
+                                    console.error('ERROR! : Unable to join public channel.', { error });
+                                }).catch((error) => {
+                                    console.error('ERROR! : Unable to get public channel details.', { error });
+                                });
+                        });
+                }
+            });
+        };
+
+        this.client.getPublicChannelDescriptors()
+            .then((page: any) => {
+                updatePublicChannels(page);
+            })
+            .catch((error: any) => {
+                console.error('ERROR! : Unable to get public channel details.', { error });
+            });
+
         this.client.getSubscribedChannels()
             .then((page: any) => {
                 updateChannels(page);
@@ -151,12 +194,10 @@ export class ChatComponent {
 
     private onTokenRefreshEvent() {
         const refreshToken = () => {
-            this.http.get(
-                API_URLS.getToken, {
-                params: { identity: this.userName, device: 'browser' },
-                responseType: 'text'
-            }).toPromise()
-                .then((token) => {
+            const { method, url, responseType } = this.apiConstants.getToken;
+            this.http.request(method, url, { identity: this.userName, device: 'browser' }, responseType)
+                .then((data: any) => {
+                    const token = data.token ? data.token : data;
                     this.client.updateToken(token);
                 })
                 .catch((error) => {
