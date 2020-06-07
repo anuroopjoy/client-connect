@@ -35,6 +35,7 @@ export class ChatComponent implements OnInit {
     public status = CONNECTION_STATUS.initial;
     public typingMembers = new Set();
     public typingMsg: string;
+    public isReady = false;
     public userName = '';
 
     private client: any;
@@ -209,7 +210,7 @@ export class ChatComponent implements OnInit {
 
     private scrollToLastMessage() {
         const element = this.messagePanel.nativeElement;
-        setTimeout(() => { element.scrollTop = element.scrollHeight; }, 0);
+        setTimeout(() => { element.scrollTop = element.scrollHeight; }, 10);
     }
 
     private setActiveChannel() {
@@ -228,6 +229,7 @@ export class ChatComponent implements OnInit {
                             cssClass: getClassName(body.length)
                         };
                     });
+                this.isReady = true;
                 this.scrollToLastMessage();
             });
         this.activeChannel.on('messageAdded', (message: any) => {

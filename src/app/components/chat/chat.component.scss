@@ -224,6 +224,39 @@
     }
 }
 
+.loader {
+    position: absolute;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    left: 35%;
+    top: 35%;
+    border-top: 6px solid #3498db;
+    width: 80px;
+    height: 80px;
+    z-index: 1000;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .msg-recieved {
     text-align: left;
     justify-content: flex-start;
@@ -234,7 +267,7 @@
 
 .channel-messages {
     margin: 8px 0px 8px 8px;
-    max-height: 50vh;
+    height: 50vh;
     overflow-y: auto;
 }
 

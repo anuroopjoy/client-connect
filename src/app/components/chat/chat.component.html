@@ -26,7 +26,7 @@
         </div>
     </div>
     <div *ngIf="connectionState.connected" class="row">
-        <div class="col-sm-6">
+        <div *ngIf="isReady" class="col-sm-6">
             <div class="channel-name">
                 <h5>
                     {{
@@ -39,6 +39,7 @@
         </div>
         <div id="channel" class="col-sm-12">
             <div #messagePanel class="col-sm-6 channel-messages">
+                <div *ngIf="!isReady" class="loader"></div>
                 <ul
                     *ngFor="let message of activeChannelMessages; let i = index"
                 >
