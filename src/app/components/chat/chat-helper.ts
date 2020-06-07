@@ -10,9 +10,9 @@ export const API_URLS = {
 };
 
 export const DEFAULT_CHANNEL = {
-    name: 'CLIENT-CONNECT-TEST-CHANNEL2',
-    uniqueName: 'CCD-TEST-CHANNEL2',
-    description: 'Client Connect Test Channel'
+    name: 'Demo Channel',
+    uniqueName: 'Demo Channel',
+    description: 'Client Connect App Demo'
 };
 
 export interface IConnectionState {

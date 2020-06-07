@@ -29,11 +29,7 @@
         <div *ngIf="isReady" class="col-sm-6">
             <div class="channel-name">
                 <h5>
-                    {{
-                        activeChannel?.friendlyName +
-                            " : " +
-                            activeChannel?.attributes.description
-                    }}
+                    {{ "Channel: " + activeChannel?.friendlyName }}
                 </h5>
             </div>
         </div>

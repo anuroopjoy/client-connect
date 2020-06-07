@@ -29,11 +29,13 @@ export class AppClientConnectWrapperComponent implements OnInit, OnDestroy {
                 if (params) {
                     const name = params.get('name');
                     const role = params.get('role');
-                    if (name && role) {
+                    const returnId = params.get('returnId');
+                    if (name && role && returnId) {
                         this.userDetails.setUserDetails({ name, role });
+                        this.userDetails.returnId = returnId;
                         this.selectedMode = 'Chat';
                     } else {
-                        alert('User details not available (format - ?name=<name>&role=<role>)');
+                        alert('User details not available (format - ?name=<name>&role=<role>&returnId=<returnId>)');
                     }
                 }
             });

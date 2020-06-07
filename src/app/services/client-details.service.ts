@@ -9,6 +9,17 @@ interface IUserDetails {
     providedIn: 'root'
 })
 export class ClientService {
+
+    private pReturnId: string;
+
+    public get returnId(): string {
+        return this.pReturnId;
+    }
+
+    public set returnId(v: string) {
+        this.pReturnId = v;
+    }
+
     private name: string;
     private role: string;
 

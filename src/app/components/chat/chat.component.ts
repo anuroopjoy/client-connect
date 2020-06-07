@@ -70,11 +70,12 @@ export class ChatComponent implements OnInit {
     }
 
     private createChannel() {
+        const channelName = this.clientService.returnId || DEFAULT_CHANNEL.name;
         this.client.createChannel({
             attributes: { description: DEFAULT_CHANNEL.description },
-            friendlyName: DEFAULT_CHANNEL.name,
+            friendlyName: channelName,
             isPrivate: false,
-            uniqueName: DEFAULT_CHANNEL.uniqueName
+            uniqueName: channelName
         })
             .then((channel: any) => {
                 channel.join()
@@ -116,9 +117,10 @@ export class ChatComponent implements OnInit {
     private onChannelEvents() {
         let subscribedChannels: any[] = [];
         const updateChannels = (page: any) => {
+            const channelName = this.clientService.returnId || DEFAULT_CHANNEL.name;
             subscribedChannels = page.items
                 .sort((a: { friendlyName: number; }, b: { friendlyName: number; }) => a.friendlyName > b.friendlyName);
-            this.activeChannel = find(subscribedChannels, channel => channel.friendlyName === DEFAULT_CHANNEL.name);
+            this.activeChannel = find(subscribedChannels, channel => channel.friendlyName === channelName);
             each(subscribedChannels, (channel) => {
                 switch (channel.status) {
                     case 'joined':
@@ -150,7 +152,8 @@ export class ChatComponent implements OnInit {
                         .then((pChannel: { join: () => Promise<any>; }) => {
                             pChannel.join()
                                 .then(qChannel => {
-                                    if (qChannel.friendlyName === DEFAULT_CHANNEL.name) {
+                                    const channelName = this.clientService.returnId || DEFAULT_CHANNEL.name;
+                                    if (qChannel.friendlyName === channelName) {
                                         this.activeChannel = qChannel;
                                         this.setActiveChannel();
                                     }

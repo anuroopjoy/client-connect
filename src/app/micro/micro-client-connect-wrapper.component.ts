@@ -18,9 +18,17 @@ export class MicroClientConnectWrapperComponent {
             this.userDetails.setUserDetails({ role: 'TaxPro', name: this.pUser });
         }
     }
+
     public get user(): string {
         return this.pUser;
     }
+
+    @Input() public set returnId(value: string) {
+        if (value) {
+            this.userDetails.returnId = value;
+        }
+    }
+
     public expandedView = false;
     public app = '';
     public liveChatIndicator = false;
