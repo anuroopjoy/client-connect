@@ -23,7 +23,7 @@ export class MicroClientConnectWrapperComponent {
         return this.pUser;
     }
 
-    @Input() public set returnId(value: string) {
+    @Input() public set returnid(value: string) {
         if (value) {
             this.userDetails.returnId = value;
         }
