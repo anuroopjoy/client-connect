@@ -5,7 +5,8 @@ import { IApiDefinition, environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-email',
-    templateUrl: './email.component.html'
+    templateUrl: './email.component.html',
+    styleUrls: ['./email.component.scss']
 })
 export class EmailComponent {
 
