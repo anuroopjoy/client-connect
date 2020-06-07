@@ -1,9 +1,6 @@
 // tslint:disable: no-any
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import Video, {
-    LocalAudioTrack, LocalVideoTrack, Participant, RemoteParticipant, Room, TrackPublication,
-    TwilioError
-} from 'twilio-video';
+import { Component, AfterViewInit, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import Video, { Room, TwilioError, LocalVideoTrack, LocalAudioTrack, Participant, RemoteParticipant, TrackPublication } from 'twilio-video';
 import EventEmitter from 'events';
 import fscreen from 'fscreen';
 
@@ -21,7 +18,7 @@ import { IMediaStreamTrackPublishOptions } from './interfaces/settings.interface
     templateUrl: './video-call.component.html',
     styleUrls: ['./video-call.component.scss']
 })
-export class VideoCallComponent implements OnInit, AfterViewInit {
+export class VideoCallComponent implements OnInit, AfterViewInit, OnDestroy {
     public innerHeight: number;
     public roomState = 'disconnected';
     public videoStyle: any;
@@ -59,6 +56,13 @@ export class VideoCallComponent implements OnInit, AfterViewInit {
         const onFullScreenChange = () => { this.isFullScreen = !!fscreen.fullscreenElement; };
         fscreen.addEventListener('fullscreenchange', onFullScreenChange);
         this.connectToRoom(token, localTracks);
+    }
+
+    public ngOnDestroy(): void {
+        const videoTrack = this.localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+        videoTrack.stop();
+        const audioTrack = this.localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+        audioTrack.disable();
     }
 
     public ngAfterViewInit(): void {
