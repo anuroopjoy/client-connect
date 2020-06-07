@@ -1,0 +1,79 @@
+<div class="container" style="margin-left: -174px; margin-top: 65px;">
+    <div *ngIf="status" class="alert alert-success" role="alert">
+        {{ status }}
+    </div>
+    <div class="jumbotron">
+        <h2></h2>
+        <form class="form-horizontal" action="/action_page.php">
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="mailFrom"
+                    >From:</label
+                >
+                <div class="col-sm-10">
+                    <input
+                        type="mailFrom"
+                        class="form-control"
+                        id="mailFrom"
+                        placeholder="fromMailAddress@hrblock.com"
+                        name="mailFrom"
+                        [(ngModel)]="mail.from"
+                    />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="mailTo">To:</label>
+                <div class="col-sm-10">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="mailTo"
+                        placeholder="toMailAddress@hrblock.com"
+                        name="mailTo"
+                        [(ngModel)]="mail.to"
+                    />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="mailSubject"
+                    >Subject:</label
+                >
+                <div class="col-sm-10">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="mailSubject"
+                        placeholder="Enter the e-mail subject here."
+                        name="mailSubject"
+                        [(ngModel)]="mail.subject"
+                    />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="mailBody"></label>
+                <div class="col-sm-10">
+                    <textarea
+                        rows="10"
+                        cols="50"
+                        class="form-control"
+                        id="mailBody"
+                        placeholder="Enter the e-mail content here."
+                        name="mailBody"
+                        [(ngModel)]="mail.body"
+                    >
+                    </textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        (click)="sendMail()"
+                    >
+                        Send Mail
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

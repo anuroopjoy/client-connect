@@ -13,7 +13,13 @@ export const environment: { production: boolean; apiConstants: IUrlConstants } =
                     responseType: 'text'
                 }
             },
-            email: {},
+            email: {
+                sendMail: {
+                    method: 'GET',
+                    url: 'Email/SendEmailAsync',
+                    responseType: undefined
+                }
+            },
             sms: {},
             video: {
                 getToken: {
@@ -37,7 +43,7 @@ export const environment: { production: boolean; apiConstants: IUrlConstants } =
 export interface IUrlConstants {
     features: {
         [key: string]: {
-            getToken?: IApiDefinition
+            [key: string]: IApiDefinition,
         }
     };
     server: string;
