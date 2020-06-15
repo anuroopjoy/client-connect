@@ -2,13 +2,18 @@
     <div class="chat">
         <div class="chat-header clearfix">
             <img
-                src="../../../assets/images/harold.png"
+                src="{{ '../../../assets/images/' + otherUser?.name + '.png' }}"
                 width="80"
                 height="80"
                 alt="avatar"
             />
             <div class="chat-about">
-                <div class="chat-with">{{ userName }}</div>
+                <div class="chat-with">
+                    {{
+                        otherUser.name + ", (" + otherUser.role + ")"
+                            | titlecase
+                    }}
+                </div>
             </div>
         </div>
         <div *ngIf="connectionState.connected" class="row">
@@ -52,7 +57,11 @@
                                                 activeChannelMessages[i - 1]
                                                     .author)
                                     "
-                                    src="../../../assets/images/harold.png"
+                                    src="{{
+                                        '../../../assets/images/' +
+                                            otherUser?.name +
+                                            '.png'
+                                    }}"
                                     class="author-pic"
                                     width="30"
                                     height="30"
