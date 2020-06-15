@@ -22,5 +22,12 @@ export interface IConnectionState {
     denied: boolean;
 }
 
+export function getUserToDisplay(role: string) {
+    return {
+        role: role.toLowerCase() === 'customer' ? 'tax pro' : 'customer',
+        name: role.toLowerCase() === 'customer' ? 'Rachel' : 'Harold'
+    };
+}
+
 export const MSG_STYLE_COL_START = 3;
 export const MAX_MSG_LINE_LENGTH = 50;

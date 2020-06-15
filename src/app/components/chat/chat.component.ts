@@ -8,7 +8,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { environment, IApiDefinition } from 'src/environments/environment';
 
 import {
-    CONNECTION_STATUS, DEFAULT_CHANNEL, IConnectionState, MAX_MSG_LINE_LENGTH, MSG_STYLE_COL_START
+    CONNECTION_STATUS, DEFAULT_CHANNEL, IConnectionState, MAX_MSG_LINE_LENGTH, getUserToDisplay
 } from './chat-helper';
 
 @Component({
@@ -37,6 +37,7 @@ export class ChatComponent implements OnInit {
     public typingMsg: string;
     public isReady = false;
     public userName = '';
+    public otherUser = { name: '', role: '' };
 
     private client: any;
     private apiConstants: { getToken?: IApiDefinition };
@@ -48,7 +49,8 @@ export class ChatComponent implements OnInit {
     }
 
     public ngOnInit() {
-        const { name } = this.clientService.getUserDetails();
+        const { name, role } = this.clientService.getUserDetails();
+        this.otherUser = getUserToDisplay(role);
         this.connect(name);
     }
 
