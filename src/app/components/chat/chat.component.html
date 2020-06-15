@@ -2,7 +2,7 @@
     <div class="chat">
         <div class="chat-header clearfix">
             <img
-                src="{{ '../../../assets/images/' + otherUser?.name + '.png' }}"
+                src="{{ '../../../assets/images/' + otherUser?.imgAttr }}"
                 width="80"
                 height="80"
                 alt="avatar"
@@ -10,13 +10,12 @@
             <div class="chat-about">
                 <div class="chat-with">
                     {{
-                        otherUser.name + ", (" + otherUser.role + ")"
-                            | titlecase
+                        otherUser.name + " (" + otherUser.role + ")" | titlecase
                     }}
                 </div>
             </div>
         </div>
-        <div *ngIf="connectionState.connected" class="row">
+        <div class="row">
             <div #messagePanel id="channel" class="col-sm-12">
                 <div class="channel-messages">
                     <div *ngIf="!isReady" class="loader"></div>
@@ -59,8 +58,7 @@
                                     "
                                     src="{{
                                         '../../../assets/images/' +
-                                            otherUser?.name +
-                                            '.png'
+                                            otherUser?.imgAttr
                                     }}"
                                     class="author-pic"
                                     width="30"
@@ -92,16 +90,14 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-12 chat-box">
-                <div class="row">
-                    <span class="typing-indicator">
-                        {{ typingMsg }}
-                    </span>
-                </div>
-            </div>
         </div>
 
         <div class="chat-message clearfix">
+            <div>
+                <span class="typing-indicator">
+                    {{ typingMsg }}
+                </span>
+            </div>
             <textarea
                 name="message-to-send"
                 id="message-to-send"

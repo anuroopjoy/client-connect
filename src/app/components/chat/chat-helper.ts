@@ -23,10 +23,18 @@ export interface IConnectionState {
 }
 
 export function getUserToDisplay(role: string) {
-    return {
-        role: role.toLowerCase() === 'customer' ? 'tax pro' : 'customer',
-        name: role.toLowerCase() === 'customer' ? 'Rachel' : 'Harold'
-    };
+    const isTaxPro = role.toLowerCase() !== 'customer';
+    const otherUser = { name: '', role: '', imgAttr: '' };
+    if (isTaxPro) {
+        otherUser.name = 'James, Harold';
+        otherUser.role = 'Customer';
+        otherUser.imgAttr = 'harold.png';
+    } else {
+        otherUser.name = 'Jane, Rachel';
+        otherUser.role = 'Tax Professional';
+        otherUser.imgAttr = 'rachel.png';
+    }
+    return otherUser;
 }
 
 export const MSG_STYLE_COL_START = 3;

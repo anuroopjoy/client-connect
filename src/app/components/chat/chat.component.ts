@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit {
     public typingMsg: string;
     public isReady = false;
     public userName = '';
-    public otherUser = { name: '', role: '' };
+    public otherUser = { name: '', role: '', imgAttr: '' };
 
     private client: any;
     private apiConstants: { getToken?: IApiDefinition };

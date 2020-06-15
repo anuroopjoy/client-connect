@@ -33,7 +33,7 @@
 .msg-sent {
     justify-content: flex-end;
     div {
-        background-color: #94a9ed;
+        background-color: #bdc8ee;
         p.author {
             text-align: right;
         }
@@ -90,7 +90,7 @@
     text-align: left;
     justify-content: flex-start;
     div {
-        background-color: #86bb71;
+        background-color: #b0c7a6;
     }
 }
 
@@ -114,6 +114,7 @@
     display: flex;
     padding: 2px;
     position: relative;
+    margin-bottom: 2px;
 }
 
 .channel-messages li > img {
@@ -141,7 +142,7 @@
 .chat {
     width: 965px;
     float: left;
-    background: #f2f5f8;
+    background: #ecf0f1;
     border: 0.1rem solid white;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
