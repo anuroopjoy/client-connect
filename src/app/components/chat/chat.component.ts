@@ -1,6 +1,6 @@
 // tslint:disable: no-any
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { each, find, first, isUndefined, last, size, isEmpty } from 'lodash-es';
+import { each, find, first, isUndefined, last, size, isEmpty, eq } from 'lodash-es';
 const Client = require('twilio-chat').Client;
 
 import { ClientService } from 'src/app/services/client-details.service';
@@ -220,8 +220,12 @@ export class ChatComponent implements OnInit {
 
     private setActiveChannel() {
 
-        const getClassName = (len: number) => {
-            return 'col-sm-' + (Math.ceil(len / MAX_MSG_LINE_LENGTH) + MSG_STYLE_COL_START);
+        const getClassName = (len: number, author: string) => {
+            let width = eq(this.userName, author) ? 20 : 22;
+            // If length of the message is less than the author's name, consider author's name for msg length.
+            len = len <= author.length ? author.length + 1 : len;
+            width = len >= MAX_MSG_LINE_LENGTH ? width + MAX_MSG_LINE_LENGTH : width + len;
+            return width + '%';
         };
 
         this.activeChannel.getMessages(30)
@@ -231,7 +235,7 @@ export class ChatComponent implements OnInit {
                         const { author, body, index, dateUpdated } = item;
                         return {
                             author, body, dateUpdated, index,
-                            cssClass: getClassName(body.length)
+                            msgWidth: getClassName(body.length, author)
                         };
                     });
                 this.isReady = true;
@@ -241,7 +245,7 @@ export class ChatComponent implements OnInit {
             const { author, body, index, dateUpdated } = message;
             this.activeChannelMessages.push({
                 author, body, dateUpdated, index,
-                cssClass: getClassName(body.length)
+                msgWidth: getClassName(body.length, author)
             });
             this.chatReceived.emit();
             this.messageToSend = '';

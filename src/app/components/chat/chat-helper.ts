@@ -22,5 +22,5 @@ export interface IConnectionState {
     denied: boolean;
 }
 
-export const MSG_STYLE_COL_START = 5;
-export const MAX_MSG_LINE_LENGTH = 20;
+export const MSG_STYLE_COL_START = 3;
+export const MAX_MSG_LINE_LENGTH = 50;

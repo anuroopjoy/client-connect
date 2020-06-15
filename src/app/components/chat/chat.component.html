@@ -1,120 +1,108 @@
-<div class="container">
-    <div class="row col-sm-8">
-        <div class="col-sm-2 led-box">
-            <div
-                [ngClass]="{
-                    'led-green': connectionState.connected,
-                    'led-yellow': connectionState.connecting,
-                    'led-red':
-                        connectionState.disconnected || connectionState.denied
-                }"
-            ></div>
-        </div>
-        <div class="col-sm-8">
-            <h2>
-                {{
-                    connectionState.connected
-                        ? userName + ", You're Online."
-                        : "You're Offline."
-                }}
-            </h2>
-        </div>
-    </div>
-    <div *ngIf="!connectionState.connected" class="row">
-        <div class="col-sm-12">
-            <h4>{{ status }}</h4>
-        </div>
-    </div>
-    <div *ngIf="connectionState.connected" class="row">
-        <div *ngIf="isReady" class="col-sm-6">
-            <div class="channel-name">
-                <h5>
-                    {{ "Channel: " + activeChannel?.friendlyName }}
-                </h5>
+<div class="container clearfix">
+    <div class="chat">
+        <div class="chat-header clearfix">
+            <img
+                src="../../../assets/images/harold.png"
+                width="80"
+                height="80"
+                alt="avatar"
+            />
+            <div class="chat-about">
+                <div class="chat-with">{{ userName }}</div>
             </div>
         </div>
-        <div id="channel" class="col-sm-12">
-            <div #messagePanel class="col-sm-6 channel-messages">
-                <div *ngIf="!isReady" class="loader"></div>
-                <div
-                    *ngIf="isReady && !activeChannelMessages?.length"
-                    class="no-conversation"
-                >
-                    <h4>
-                        You're starting a new conversation
-                    </h4>
-                    <h5>Type your first message below.</h5>
-                </div>
-                <ul
-                    *ngFor="let message of activeChannelMessages; let i = index"
-                >
-                    <li
-                        class="msg"
-                        [ngClass]="{
-                            'msg-sent': message?.author === userName,
-                            'msg-recieved': message?.author !== userName
-                        }"
-                        [ngStyle]="{
-                            'text-align':
-                                message?.author === userName ? 'right' : 'left'
-                        }"
+        <div *ngIf="connectionState.connected" class="row">
+            <div #messagePanel id="channel" class="col-sm-12">
+                <div class="channel-messages">
+                    <div *ngIf="!isReady" class="loader"></div>
+                    <div
+                        *ngIf="isReady && !activeChannelMessages?.length"
+                        class="no-conversation"
                     >
-                        <div [class]="message.cssClass">
-                            <img
-                                *ngIf="
-                                    message?.author !== userName &&
-                                    (i === 0 ||
-                                        message?.author !==
-                                            activeChannelMessages[i - 1].author)
-                                "
-                                src="../../../assets/images/icons8-user-male-26.png"
-                                width="15"
-                                height="15"
-                            />
-                            <p
-                                *ngIf="
-                                    i === 0 ||
-                                    message?.author !==
-                                        activeChannelMessages[i - 1].author
-                                "
-                                class="author"
-                            >
-                                {{
+                        <h4>
+                            You're starting a new conversation
+                        </h4>
+                        <h5>Type your first message below.</h5>
+                    </div>
+                    <ul
+                        *ngFor="
+                            let message of activeChannelMessages;
+                            let i = index
+                        "
+                    >
+                        <li
+                            class="msg"
+                            [ngClass]="{
+                                'msg-sent': message?.author === userName,
+                                'msg-recieved': message?.author !== userName
+                            }"
+                            [ngStyle]="{
+                                'text-align':
                                     message?.author === userName
-                                        ? ""
-                                        : message?.author
-                                }}
-                                <span class="timestamp">
+                                        ? 'right'
+                                        : 'left'
+                            }"
+                        >
+                            <div [ngStyle]="{ width: message?.msgWidth }">
+                                <img
+                                    *ngIf="
+                                        message?.author !== userName &&
+                                        (i === 0 ||
+                                            message?.author !==
+                                                activeChannelMessages[i - 1]
+                                                    .author)
+                                    "
+                                    src="../../../assets/images/harold.png"
+                                    width="30"
+                                    height="30"
+                                />
+                                <p
+                                    *ngIf="
+                                        i === 0 ||
+                                        message?.author !==
+                                            activeChannelMessages[i - 1].author
+                                    "
+                                    class="author"
+                                >
                                     {{
-                                        message?.dateUpdated | date: "shortTime"
+                                        message?.author === userName
+                                            ? ""
+                                            : message?.author
                                     }}
-                                </span>
-                            </p>
-                            <p class="body">{{ message?.body }}</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-sm-12 chat-box">
-            <div class="row">
-                <span class="typing-indicator">
-                    {{ typingMsg }}
-                </span>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <input
-                        type="text"
-                        id="message-body-input"
-                        class="form-control"
-                        placeholder="Press 'Enter' key to send your messages."
-                        [(ngModel)]="messageToSend"
-                        (keydown.enter)="sendMessage()"
-                        (keydown)="activeChannel.typing()"
-                    />
+                                    <span class="timestamp">
+                                        {{
+                                            message?.dateUpdated
+                                                | date: "shortTime"
+                                        }}
+                                    </span>
+                                </p>
+                                <p class="body">{{ message?.body }}</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
+            <div class="col-sm-12 chat-box">
+                <div class="row">
+                    <span class="typing-indicator">
+                        {{ typingMsg }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-message clearfix">
+            <textarea
+                name="message-to-send"
+                id="message-to-send"
+                placeholder="Type a new message"
+                [(ngModel)]="messageToSend"
+                (keydown)="activeChannel.typing()"
+                rows="3"
+            ></textarea>
+            <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+            <i class="fa fa-file-image-o"></i>
+            <button (click)="sendMessage()">Send</button>
         </div>
     </div>
 </div>
