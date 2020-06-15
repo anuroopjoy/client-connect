@@ -7,7 +7,7 @@ export const environment: { production: boolean; apiConstants: IUrlConstants } =
             chat: {
                 getToken: {
                     method: 'GET',
-                    url: 'ChatToken/Generate',
+                    url: 'ChatToken',
                     responseType: undefined
                 }
             },
