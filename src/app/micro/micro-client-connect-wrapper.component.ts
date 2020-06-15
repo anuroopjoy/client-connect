@@ -29,7 +29,6 @@ export class MicroClientConnectWrapperComponent {
         }
     }
 
-    public expandedView = false;
     public app = '';
     public liveChatIndicator = false;
     public liveVoiceIndicator = false;
@@ -37,10 +36,6 @@ export class MicroClientConnectWrapperComponent {
     private pUser: string;
 
     constructor(private userDetails: ClientService) {
-    }
-
-    public toggleWidget() {
-        this.expandedView = !this.expandedView;
     }
 
     public selectApp(app: string) {
@@ -61,10 +56,6 @@ export class MicroClientConnectWrapperComponent {
             this.liveChatIndicator = true;
         } else if (app === 'Voice') {
             this.liveVoiceIndicator = true;
-        }
-        if (!this.expandedView) {
-            this.expandedView = (this.liveChatIndicator || this.liveVoiceIndicator)
-                && !(['Chat', 'Voice'].includes(this.app));
         }
     }
 

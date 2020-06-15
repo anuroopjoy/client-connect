@@ -15,7 +15,7 @@ export class MicroClientConnectCustomerComponent {
     @Input() public set user(value: string) {
         if (value) {
             this.pUser = value;
-            this.userDetails.setUserDetails({ role: 'TaxPro', name: this.pUser });
+            this.userDetails.setUserDetails({ role: 'Customer', name: this.pUser });
         }
     }
 
