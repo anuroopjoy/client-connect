@@ -59,10 +59,16 @@ export class VideoCallComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        const videoTrack = this.localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
-        videoTrack.stop();
-        const audioTrack = this.localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
-        audioTrack.disable();
+        if (this.localTracks) {
+            const videoTrack = this.localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+            if (videoTrack) {
+                videoTrack.stop();
+            }
+            const audioTrack = this.localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+            if (audioTrack) {
+                audioTrack.disable();
+            }
+        }
     }
 
     public ngAfterViewInit(): void {
