@@ -1,15 +1,14 @@
-.email-box {
-    padding: 30px;
-    border: 1px solid #dcdcdc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-}
-
 .email-app {
+    width: 965px;
+    height: 85vh;
     display: flex;
     flex-direction: row;
-    background: #fff;
-    border: 1px solid #e1e6ef;
+    background: #ecf0f1;
+    border: 0.1rem solid white;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
 }
 
 .email-app nav {
