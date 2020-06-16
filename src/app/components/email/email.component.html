@@ -1,74 +1,183 @@
-<div class="email-box">
-    <div *ngIf="status" class="alert alert-success" role="alert">
-        {{ status }}
-    </div>
-    <form class="form-horizontal" action="/action_page.php">
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="mailFrom">From:</label>
-            <div class="col-sm-10">
-                <input
-                    type="mailFrom"
-                    class="form-control"
-                    id="mailFrom"
-                    placeholder="fromMailAddress@hrblock.com"
-                    name="mailFrom"
-                    [(ngModel)]="mail.from"
-                />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="mailTo">To:</label>
-            <div class="col-sm-10">
-                <input
-                    type="text"
-                    class="form-control"
-                    id="mailTo"
-                    placeholder="toMailAddress@hrblock.com"
-                    name="mailTo"
-                    [(ngModel)]="mail.to"
-                />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="mailSubject"
-                >Subject:</label
+<div class="email-app col-md-12">
+    <div class="col-md-3">
+        <nav>
+            <a href="javaScript:void(0)" class="btn btn-danger btn-block"
+                >New Email</a
             >
-            <div class="col-sm-10">
-                <input
-                    type="text"
-                    class="form-control"
-                    id="mailSubject"
-                    placeholder="Enter the e-mail subject here."
-                    name="mailSubject"
-                    [(ngModel)]="mail.subject"
-                />
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="javaScript:void(0)">
+                        <i class="fa fa-inbox"> </i>
+                        Inbox <span class="badge badge-danger">4</span></a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javaScript:void(0)"
+                        ><i class="fa fa-star"></i> Stared</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javaScript:void(0)"
+                        ><i class="fa fa-rocket"></i> Sent</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javaScript:void(0)"
+                        ><i class="fa fa-trash-o"></i> Trash</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javaScript:void(0)"
+                        ><i class="fa fa-bookmark"></i> Important</a
+                    >
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="col-md-9">
+        <main>
+            <!-- <p class="text-center">New EMail</p> -->
+            <div *ngIf="status" class="alert alert-success" role="alert">
+                {{ status }}
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="mailBody"></label>
-            <div class="col-sm-10">
-                <textarea
-                    rows="10"
-                    cols="50"
-                    class="form-control"
-                    id="mailBody"
-                    placeholder="Enter the e-mail content here."
-                    name="mailBody"
-                    [(ngModel)]="mail.body"
-                >
-                </textarea>
+            <form action="/action_page.php">
+                <div class="form-group">
+                    <label for="email">To:</label>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        placeholder="Type E-Mail To Address"
+                        name="email"
+                        [(ngModel)]="mail.to"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject:</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="pwd"
+                        placeholder="Subject"
+                        name="subject"
+                        [(ngModel)]="mail.subject"
+                    />
+                </div>
+            </form>
+            <div class="">
+                <div class="ml-auto">
+                    <div class="toolbar" role="toolbar">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-bold"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-italic"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-underline"></span>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-align-left"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-align-right"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-align-center"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-align-justify"></span>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-indent"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-outdent"></span>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-list-ul"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                <span class="fa fa-list-ol"></span>
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-light">
+                            <span class="fa fa-trash-o"></span>
+                        </button>
+                        <button type="button" class="btn btn-light">
+                            <span class="fa fa-paperclip"></span>
+                        </button>
+                        <div class="btn-group">
+                            <button
+                                type="button"
+                                class="btn btn-light dropdown-toggle"
+                                data-toggle="dropdown"
+                            >
+                                <span class="fa fa-tags"></span>
+                                <span class="caret"></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a
+                                    class="dropdown-item"
+                                    href="javaScript:void(0)"
+                                    >add label
+                                    <span class="badge badge-danger">
+                                        Home</span
+                                    ></a
+                                >
+                                <a
+                                    class="dropdown-item"
+                                    href="javaScript:void(0)"
+                                    >add label
+                                    <span class="badge badge-info">
+                                        Job</span
+                                    ></a
+                                >
+                                <a
+                                    class="dropdown-item"
+                                    href="javaScript:void(0)"
+                                    >add label
+                                    <span class="badge badge-success">
+                                        Clients</span
+                                    ></a
+                                >
+                                <a
+                                    class="dropdown-item"
+                                    href="javaScript:void(0)"
+                                    >add label
+                                    <span class="badge badge-warning">
+                                        News</span
+                                    ></a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <textarea
+                            class="form-control"
+                            rows="8"
+                            id="mailBody"
+                            [(ngModel)]="mail.body"
+                        ></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button
+                            type="submit"
+                            class="btn btn-success"
+                            (click)="sendMail()"
+                        >
+                            Send
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                    (click)="sendMail()"
-                >
-                    Send Mail
-                </button>
-            </div>
-        </div>
-    </form>
+        </main>
+    </div>
 </div>
