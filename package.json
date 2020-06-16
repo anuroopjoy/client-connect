@@ -15,7 +15,7 @@
         "lint": "ng lint",
         "e2e": "ng e2e",
         "micro-build": "ng build --project micro-client-connect --prod --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect",
-        "micro-build:customer": "ng build --project micro-client-connect-customer --prod --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect",
+        "micro-build:customer": "ng build --project micro-client-connect-customer --prod --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect-customer",
         "micro-build:dev": "ng build --project micro-client-connect --aot --source-map true --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect",
         "micro-build:customer:dev": "ng build --project micro-client-connect-customer --aot --source-map true --single-bundle true --bundle-styles false --output-hashing none --vendor-chunk false --output-path dist/micro-client-connect-customer",
         "copy:customer:all": "xcopy /d /y /i /s dist\\micro-client-connect-customer\\* .\\host-app\\micro\\micro-client-connect-customer\\*",
