@@ -14,7 +14,7 @@ export const environment: { production: boolean; apiConstants: IUrlConstants } =
             email: {
                 sendMail: {
                     method: 'GET',
-                    url: 'Email/SendEmailAsync',
+                    url: 'Email',
                     responseType: undefined
                 }
             },
@@ -22,19 +22,19 @@ export const environment: { production: boolean; apiConstants: IUrlConstants } =
             video: {
                 getToken: {
                     method: 'GET',
-                    url: 'VideoCallToken/Generate',
+                    url: 'VideoCallToken',
                     responseType: undefined
                 }
             },
             voice: {
                 getToken: {
                     method: 'GET',
-                    url: 'Token/Generate',
+                    url: 'VoiceCallToken',
                     responseType: undefined
                 }
             }
         },
-        server: 'http://localhost:4200/'
+        server: 'https://clientconnect.azurewebsites.net/api/'
     }
 };
 

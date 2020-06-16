@@ -3,47 +3,47 @@
 // The list of file replacements can be found in `angular.json`.
 /** Environment variables for dev mode */
 export const environment: { production: boolean; apiConstants: IUrlConstants } = {
-    production: false,
+    production: true,
     apiConstants: {
         features: {
             chat: {
                 getToken: {
                     method: 'GET',
-                    url: 'getToken',
-                    responseType: 'text'
+                    url: 'ChatToken',
+                    responseType: undefined
                 }
             },
             email: {
                 sendMail: {
                     method: 'GET',
-                    url: 'Email/SendEmailAsync',
+                    url: 'Email',
                     responseType: undefined
                 }
             },
             sms: {},
             video: {
                 getToken: {
-                    method: 'POST',
-                    url: 'token',
+                    method: 'GET',
+                    url: 'VideoCallToken',
                     responseType: undefined
                 }
             },
             voice: {
                 getToken: {
-                    method: 'POST',
-                    url: 'token/generate',
+                    method: 'GET',
+                    url: 'VoiceCallToken',
                     responseType: undefined
                 }
             }
         },
-        server: 'http://localhost:4200/'
+        server: 'https://clientconnect.azurewebsites.net/api/'
     }
 };
 
 export interface IUrlConstants {
     features: {
         [key: string]: {
-            [key: string]: IApiDefinition,
+            [key: string]: IApiDefinition
         }
     };
     server: string;

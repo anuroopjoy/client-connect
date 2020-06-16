@@ -4,7 +4,7 @@
     "scripts": {
         "ng": "ng",
         "micro-server": "http-server ../wwwroot -p 9100 --cors=http://localhost:4200/",
-        "host-server": "http-server ./host-app -p 9200",
+        "host-server": "http-server ./new-host-app -p 9200",
         "ng-start": "ng serve --proxy-config proxy.conf.json --project=app-client-connect --configuration=production",
         "ng-dev": "ng serve --proxy-config proxy.dev.json --project=app-client-connect",
         "postinstall": "node patch-webpack.js",
@@ -22,10 +22,9 @@
         "copy:customer:assets": "xcopy /d /y /i /s dist\\micro-client-connect-customer\\assets\\* .\\host-app\\assets\\*",
         "copy:all": "xcopy /d /y /i /s dist\\micro-client-connect\\* .\\new-host-app\\micro\\micro-client-connect\\*",
         "copy:assets": "xcopy /d /y /i /s dist\\micro-client-connect\\assets\\* .\\new-host-app\\assets\\*",
-        "micro:prod": "npm run micro-build && npm run copy:all && npm run copy:assets",
         "micro": "npm run micro:customer && npm run micro:taxpro",
-        "micro:customer": "npm run micro-build:customer:dev && npm run copy:customer:all && npm run copy:customer:assets",
-        "micro:taxpro": "npm run micro-build:dev && npm run copy:all && npm run copy:assets",
+        "micro:customer": "npm run micro-build:customer && npm run copy:customer:all && npm run copy:customer:assets",
+        "micro:taxpro": "npm run micro-build && npm run copy:all && npm run copy:assets",
         "documentation:lib": "npx compodoc -c ./projects/hrblock-ocap-header/.compodocrc.json",
         "documentation": "npm run documentation:lib && npx compodoc -c ./.compodocrc.json",
         "bundle-analyzer": "webpack-bundle-analyzer dist/app-client-connect/stats.json"
