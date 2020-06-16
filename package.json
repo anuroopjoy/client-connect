@@ -23,8 +23,11 @@
         "copy:all": "xcopy /d /y /i /s dist\\micro-client-connect\\* .\\new-host-app\\micro\\micro-client-connect\\*",
         "copy:assets": "xcopy /d /y /i /s dist\\micro-client-connect\\assets\\* .\\new-host-app\\assets\\*",
         "micro": "npm run micro:customer && npm run micro:taxpro",
+        "micro:dev": "npm run micro:customer:dev && npm run micro:taxpro:dev",
         "micro:customer": "npm run micro-build:customer && npm run copy:customer:all && npm run copy:customer:assets",
+        "micro:customer:dev": "npm run micro-build:customer:dev && npm run copy:customer:all && npm run copy:customer:assets",
         "micro:taxpro": "npm run micro-build && npm run copy:all && npm run copy:assets",
+        "micro:taxpro:dev": "npm run micro-build:dev && npm run copy:all && npm run copy:assets",
         "documentation:lib": "npx compodoc -c ./projects/hrblock-ocap-header/.compodocrc.json",
         "documentation": "npm run documentation:lib && npx compodoc -c ./.compodocrc.json",
         "bundle-analyzer": "webpack-bundle-analyzer dist/app-client-connect/stats.json"
