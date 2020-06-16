@@ -1,4 +1,4 @@
-<div class="container clearfix">
+<div class="clearfix">
     <div class="chat">
         <div class="chat-header clearfix">
             <img
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div>
             <div #messagePanel id="channel" class="col-sm-12">
                 <div class="channel-messages">
                     <div *ngIf="!isReady" class="loader"></div>
@@ -28,13 +28,12 @@
                         </h4>
                         <h5>Type your first message below.</h5>
                     </div>
-                    <ul
-                        *ngFor="
-                            let message of activeChannelMessages;
-                            let i = index
-                        "
-                    >
+                    <ul>
                         <li
+                            *ngFor="
+                                let message of activeChannelMessages;
+                                let i = index
+                            "
                             class="msg"
                             [ngClass]="{
                                 'msg-sent': message?.author === userName,
@@ -108,7 +107,9 @@
             ></textarea>
             <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
             <i class="fa fa-file-image-o"></i>
-            <button (click)="sendMessage()">Send</button>
+            <button class="btn btn-primary" (click)="sendMessage()">
+                Send
+            </button>
         </div>
     </div>
 </div>

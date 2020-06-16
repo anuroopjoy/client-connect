@@ -243,6 +243,14 @@ export class ChatComponent implements OnInit {
                 this.isReady = true;
                 this.scrollToLastMessage();
             });
+        this.activeChannel.getMembers()
+            .then((members: any) => {
+                // This will provide the list of users.
+                console.log(members);
+            })
+            .catch((error: any) => {
+                console.error('ERROR! : Unable to get the member details.', { error });
+            });
         this.activeChannel.on('messageAdded', (message: any) => {
             const { author, body, index, dateUpdated } = message;
             this.activeChannelMessages.push({

@@ -101,7 +101,7 @@
 .channel-messages {
     margin-left: 8%;
     margin-right: 8%;
-    height: 40vh;
+    height: 45vh;
 }
 
 .channel-messages ul {
@@ -239,13 +239,8 @@
 }
 .chat .chat-message button {
     float: right;
-    color: #94c2ed;
-    font-size: 16px;
     text-transform: uppercase;
-    border: none;
     cursor: pointer;
-    font-weight: bold;
-    background: #f2f5f8;
 }
 .chat .chat-message button:hover {
     color: #75b1e8;

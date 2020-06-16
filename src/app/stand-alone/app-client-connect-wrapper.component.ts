@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ClientService } from '../services/client-details.service';
+import { getCustomerName } from '../constants/user-details.constants';
 
 /**
  * StandAlone TaxFlow WrapperComponent
@@ -27,15 +28,15 @@ export class AppClientConnectWrapperComponent implements OnInit, OnDestroy {
         this.unsubscribe = this.route.queryParamMap
             .subscribe((params: ParamMap) => {
                 if (params) {
-                    const name = params.get('name');
-                    const role = params.get('role');
+                    const name = getCustomerName();
+                    const role = 'Customer';
                     const returnId = params.get('returnId');
-                    if (name && role && returnId) {
+                    if (returnId) {
                         this.userDetails.setUserDetails({ name, role });
                         this.userDetails.returnId = returnId;
                         this.selectedMode = 'Chat';
                     } else {
-                        alert('User details not available (format - ?name=<name>&role=<role>&returnId=<returnId>)');
+                        alert('Please provide details (format - ?returnId=<returnId>)');
                     }
                 }
             });

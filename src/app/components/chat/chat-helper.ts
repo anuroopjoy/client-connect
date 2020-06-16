@@ -1,3 +1,5 @@
+import { getCustomerName, getTaxproName } from 'src/app/constants/user-details.constants';
+
 export const CONNECTION_STATUS = {
     initial: 'Chat with one of our tax professionals right now. Click the "CHAT" button.',
     connecting: 'Please wait. We are connecting you...',
@@ -26,11 +28,11 @@ export function getUserToDisplay(role: string) {
     const isTaxPro = role.toLowerCase() !== 'customer';
     const otherUser = { name: '', role: '', imgAttr: '' };
     if (isTaxPro) {
-        otherUser.name = 'James, Harold';
+        otherUser.name = getCustomerName();
         otherUser.role = 'Customer';
         otherUser.imgAttr = 'harold.png';
     } else {
-        otherUser.name = 'Jane, Rachel';
+        otherUser.name = getTaxproName();
         otherUser.role = 'Tax Professional';
         otherUser.imgAttr = 'rachel.png';
     }

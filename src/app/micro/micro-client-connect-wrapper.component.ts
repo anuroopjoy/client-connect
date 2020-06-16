@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { ClientService } from '../services/client-details.service';
+import { getTaxproName } from '../constants/user-details.constants';
 
 /**
  * Micro TaxFlow Wrapper Component
@@ -12,20 +13,13 @@ import { ClientService } from '../services/client-details.service';
 })
 export class MicroClientConnectWrapperComponent {
 
-    @Input() public set user(value: string) {
-        if (value) {
-            this.pUser = value;
-            this.userDetails.setUserDetails({ role: 'TaxPro', name: this.pUser });
-        }
-    }
-
-    public get user(): string {
-        return this.pUser;
-    }
-
     @Input() public set returnid(value: string) {
         if (value) {
             this.userDetails.returnId = value;
+            this.userDetails.setUserDetails({
+                role: 'TaxPro',
+                name: getTaxproName()
+            });
         }
     }
 
@@ -52,9 +46,9 @@ export class MicroClientConnectWrapperComponent {
     }
 
     public showIndicator(app: string) {
-        if (app === 'Chat') {
+        if (this.app !== 'Chat' && app === 'Chat') {
             this.liveChatIndicator = true;
-        } else if (app === 'Voice') {
+        } else if (this.app !== 'Voice' && app === 'Voice') {
             this.liveVoiceIndicator = true;
         }
     }
