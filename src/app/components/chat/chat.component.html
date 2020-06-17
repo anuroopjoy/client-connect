@@ -71,11 +71,10 @@
                                     "
                                     class="author"
                                 >
-                                    {{
-                                        message?.author === userName
-                                            ? ""
-                                            : message?.author
-                                    }}
+                                    {{ message?.author }}
+                                    <span class="user-role">
+                                        {{ "(" + message?.role + ")" }}
+                                    </span>
                                     <span class="timestamp">
                                         {{
                                             message?.dateUpdated

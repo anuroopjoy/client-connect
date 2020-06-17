@@ -131,6 +131,15 @@
     margin-left: 10px;
     padding: 0;
     width: calc(100% - 90px);
+    .user-role {
+        font-size: 12px;
+        font-style: italic;
+        text-decoration: underline;
+    }
+    .timestamp {
+        font-size: 12px;
+        font-weight: 500;
+    }
 }
 
 .channel-messages p.body {
