@@ -9466,13 +9466,20 @@ Imaging with any questions regarding Web fonts:  http://webfonts.fonts.com
             }
         }
         docReady(function () {
-            const url =
-                "/client-profile/index.html" + window.location.search;
+            const urlParams = window.location.search;
+            const clientProfUrl = "/client-profile/index.html" + urlParams;
+            const homeUrl = "/index.html" + urlParams;
             const tag1 = document.getElementById(
                 "DrpDwnMn0-5s31linkElement"
             );
+            const tag2 = document.getElementById(
+                "DrpDwnMn0-5s30linkElement"
+            )
             if (tag1) {
-                tag1.href = url;
+                tag1.href = clientProfUrl;
+            }
+            if (tag2) {
+                tag2.href = homeUrl;
             }
         });
     </script>
