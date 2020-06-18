@@ -1,5 +1,5 @@
 <ng-container *ngIf="mode === 'Customer'">
-    <div class="container">
+    <div class="container call-container">
 
         <h2 id="support">Contact Tax Professional</h2>
         <p class="lead">
@@ -9,7 +9,7 @@
         <div class="row">
 
             <div class="col-md-6 col-md-push-6">
-                <div class="panel panel-info client-controls">
+                <div class="panel  panel-info client-controls" [ngClass]="{animate: status ==='Incoming support call'}">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             Talk to tax professional now
