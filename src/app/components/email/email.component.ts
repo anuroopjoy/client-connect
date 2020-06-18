@@ -35,7 +35,8 @@ export class EmailComponent {
             body: `
 Hi,
 
-    < Email Content Here >
+    Please access the below link to connect with your tax pro
+    https://clientconnectapp.z30.web.core.windows.net/customer/?returnId=8e233cf6-7900-4c09-a791-01dba8d11324
 
 Thank you,
 ${this.name}
