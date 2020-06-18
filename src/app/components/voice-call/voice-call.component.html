@@ -9,7 +9,7 @@
         <div class="row">
 
             <div class="col-md-6 col-md-push-6">
-                <div class="panel  panel-info client-controls" [ngClass]="{'animate': status ==='Incoming support call'}">
+                <div class="panel  panel-info client-controls">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             Talk to tax professional now
@@ -34,14 +34,14 @@
     </div>
 </ng-container>
 <ng-container *ngIf="mode === 'TaxPro'">
-    <div class="container">
+    <div class="container call-container">
         <h2>Call Customer</h2>
         <p class="lead">
           Click the "Call customer" button to start a phone call from your browser.
         </p>
         <div class="row">
           <div class="col-md-4 col-md-push-8">
-            <div class="panel panel-primary client-controls">
+            <div class="panel panel-primary client-controls" [ngClass]="{'animate': status ==='Incoming support call'}">
               <div class="panel-heading">
                 <h3 class="panel-title">Make a call</h3>
               </div>
